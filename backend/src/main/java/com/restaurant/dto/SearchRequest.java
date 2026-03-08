@@ -1,24 +1,27 @@
 package com.restaurant.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
+import com.restaurant.model.TableFeature;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
-public record ReservationRequest(
-        @NotNull Long tableId,
-        @NotNull @FutureOrPresent LocalDate date,
+public record SearchRequest(
+        @NotNull LocalDate date,
         @NotNull LocalTime startTime,
-        @Min(30) int duration,
         @Min(1) int partySize,
-        @NotBlank String guestName
+        int duration,
+        String zone,
+        Set<TableFeature> preferences
 ) {
-    public ReservationRequest {
+    public SearchRequest {
         if (duration == 0) {
             duration = 120;
+        }
+        if (preferences == null) {
+            preferences = Set.of();
         }
     }
 }
