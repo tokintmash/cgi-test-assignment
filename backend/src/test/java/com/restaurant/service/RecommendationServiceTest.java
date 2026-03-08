@@ -1,7 +1,7 @@
 package com.restaurant.service;
 
 import com.restaurant.dto.SearchRequest;
-import com.restaurant.dto.TableRecommendation;
+import com.restaurant.model.Reservation;
 import com.restaurant.model.RestaurantTable;
 import com.restaurant.model.TableFeature;
 import com.restaurant.repository.ReservationRepository;
@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +49,7 @@ class RecommendationServiceTest {
         var request = new SearchRequest(DATE, TIME, 4, 120, "Window", Set.of(TableFeature.WINDOW, TableFeature.ACCESSIBLE));
 
         when(tableRepository.findAll()).thenReturn(List.of(table));
-        when(reservationRepository.findOverlapping(eq(1L), eq(DATE), eq(TIME), any())).thenReturn(List.of());
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
 
         var response = service.search(request);
 
@@ -71,7 +69,7 @@ class RecommendationServiceTest {
         var request = new SearchRequest(DATE, TIME, 4, 120, "Window", Set.of(TableFeature.WINDOW, TableFeature.ACCESSIBLE));
 
         when(tableRepository.findAll()).thenReturn(List.of(table));
-        when(reservationRepository.findOverlapping(eq(1L), eq(DATE), eq(TIME), any())).thenReturn(List.of());
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
 
         var response = service.search(request);
 
@@ -92,7 +90,7 @@ class RecommendationServiceTest {
         var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
 
         when(tableRepository.findAll()).thenReturn(List.of(table));
-        when(reservationRepository.findOverlapping(eq(1L), eq(DATE), eq(TIME), any())).thenReturn(List.of());
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
 
         var response = service.search(request);
 
@@ -109,7 +107,7 @@ class RecommendationServiceTest {
         var request = new SearchRequest(DATE, TIME, 2, 120, null, null);
 
         when(tableRepository.findAll()).thenReturn(List.of(small, large));
-        when(reservationRepository.findOverlapping(any(), eq(DATE), eq(TIME), any())).thenReturn(List.of());
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
 
         var response = service.search(request);
 
@@ -130,6 +128,7 @@ class RecommendationServiceTest {
         var request = new SearchRequest(DATE, TIME, 6, 120, null, null);
 
         when(tableRepository.findAll()).thenReturn(List.of(table));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
 
         var response = service.search(request);
 
@@ -142,9 +141,10 @@ class RecommendationServiceTest {
         var table = createTable(1L, "W1", 4, "Window", Set.of());
         var request = new SearchRequest(DATE, TIME, 2, 120, null, null);
 
+        var overlappingReservation = new Reservation(1L, DATE, LocalTime.of(18, 30), LocalTime.of(20, 30), 2, "Guest");
+
         when(tableRepository.findAll()).thenReturn(List.of(table));
-        when(reservationRepository.findOverlapping(eq(1L), eq(DATE), eq(TIME), any()))
-                .thenReturn(List.of(new com.restaurant.model.Reservation()));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of(overlappingReservation));
 
         var response = service.search(request);
 
@@ -160,7 +160,7 @@ class RecommendationServiceTest {
         var request = new SearchRequest(DATE, TIME, 4, 120, "Window", Set.of(TableFeature.WINDOW));
 
         when(tableRepository.findAll()).thenReturn(List.of(okTable, perfectTable));
-        when(reservationRepository.findOverlapping(any(), eq(DATE), eq(TIME), any())).thenReturn(List.of());
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
 
         var response = service.search(request);
 

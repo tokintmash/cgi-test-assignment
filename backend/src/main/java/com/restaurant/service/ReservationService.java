@@ -6,6 +6,8 @@ import com.restaurant.model.Reservation;
 import com.restaurant.repository.ReservationRepository;
 import com.restaurant.repository.TableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,6 +27,7 @@ public class ReservationService {
         this.dataInitializer = dataInitializer;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Reservation createReservation(ReservationRequest request) {
         var table = tableRepository.findById(request.tableId())
                 .orElseThrow(() -> new IllegalArgumentException("Table not found: " + request.tableId()));

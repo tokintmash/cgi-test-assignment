@@ -1,6 +1,7 @@
 package com.restaurant.service;
 
 import com.restaurant.dto.*;
+import com.restaurant.model.Reservation;
 import com.restaurant.model.RestaurantTable;
 import com.restaurant.model.TableFeature;
 import com.restaurant.repository.ReservationRepository;
@@ -34,13 +35,15 @@ public class RecommendationService {
         var allTables = tableRepository.findAll();
         var endTime = request.startTime().plusMinutes(request.duration());
 
+        var reservationsOnDate = reservationRepository.findByDate(request.date());
+
         var allTableStatuses = allTables.stream()
-                .map(table -> toTableStatus(table, request, endTime))
+                .map(table -> toTableStatus(table, request, endTime, reservationsOnDate))
                 .toList();
 
         var recommendations = allTables.stream()
                 .filter(table -> table.getCapacity() >= request.partySize())
-                .filter(table -> isAvailable(table, request, endTime))
+                .filter(table -> isAvailable(table, request, endTime, reservationsOnDate))
                 .map(table -> toRecommendation(table, request))
                 .sorted(Comparator.comparingDouble(TableRecommendation::score).reversed())
                 .toList();
@@ -48,22 +51,23 @@ public class RecommendationService {
         return new SearchResponse(recommendations, allTableStatuses);
     }
 
-    private boolean isAvailable(RestaurantTable table, SearchRequest request, LocalTime endTime) {
-        var overlaps = reservationRepository.findOverlapping(
-                table.getId(), request.date(), request.startTime(), endTime);
-        return overlaps.isEmpty();
+    private boolean isAvailable(RestaurantTable table, SearchRequest request,
+                                LocalTime endTime, List<Reservation> reservationsOnDate) {
+        return reservationsOnDate.stream()
+                .noneMatch(r -> r.getTableId().equals(table.getId())
+                        && r.getStartTime().isBefore(endTime)
+                        && r.getEndTime().isAfter(request.startTime()));
     }
 
-    private TableStatus toTableStatus(RestaurantTable table, SearchRequest request, LocalTime endTime) {
-        var overlaps = reservationRepository.findOverlapping(
-                table.getId(), request.date(), request.startTime(), endTime);
-        var status = overlaps.isEmpty() ? "available" : "reserved";
+    private TableStatus toTableStatus(RestaurantTable table, SearchRequest request,
+                                      LocalTime endTime, List<Reservation> reservationsOnDate) {
+        var available = isAvailable(table, request, endTime, reservationsOnDate);
         return new TableStatus(
                 table.getId(),
                 table.getName(),
                 table.getZone(),
                 table.getCapacity(),
-                status,
+                available ? "available" : "reserved",
                 table.getFeatures()
         );
     }
