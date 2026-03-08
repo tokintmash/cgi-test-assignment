@@ -5,7 +5,7 @@
 | # | Phase | Branch | Status | Depends On |
 |---|---|---|---|---|
 | 0 | Project scaffolding & documentation | `main` | ✅ Done | — |
-| 1 | Backend core (entities, repos, seed data, API) | `feat/backend-core` | ⬜ Not started | Phase 0 |
+| 1 | Backend core (entities, repos, seed data, API) | `feat/backend-core` | ✅ Done | Phase 0 |
 | 2 | Recommendation engine + unit tests | `feat/recommendation-engine` | ⬜ Not started | Phase 1 |
 | 3 | Frontend (search, floor plan, booking) | `feat/frontend-ui` | ⬜ Not started | Phase 2 |
 | 4 | Integration, polish & testing | `fix/integration-polish` | ⬜ Not started | Phase 3 |
@@ -28,18 +28,18 @@
 - [x] .gitignore configured for full stack
 - [x] application.yml configured (H2, JPA, server port)
 
-### Phase 1: Backend Core (`feat/backend-core`)
-- [ ] `TableFeature` enum (WINDOW, PRIVATE, ACCESSIBLE, NEAR_PLAY_AREA)
-- [ ] `RestaurantTable` entity with position/dimension fields
-- [ ] `Reservation` entity
-- [ ] `TableRepository` and `ReservationRepository`
-- [ ] `DataInitializer` — seed 15-20 tables across 4 zones
-- [ ] `DataInitializer` — generate 10-15 random reservations on startup
-- [ ] `GET /api/tables` — all tables with current status
-- [ ] `POST /api/reservations` — create booking with overlap check
-- [ ] `POST /api/reservations/reset` — regenerate random reservations
-- [ ] `CorsConfig` for frontend dev
-- [ ] Manual test with curl
+### Phase 1: Backend Core (`feat/backend-core`) ✅
+- [x] `TableFeature` enum (WINDOW, PRIVATE, ACCESSIBLE, NEAR_PLAY_AREA)
+- [x] `RestaurantTable` entity with position/dimension fields
+- [x] `Reservation` entity
+- [x] `TableRepository` and `ReservationRepository`
+- [x] `DataInitializer` — seed 15-20 tables across 4 zones
+- [x] `DataInitializer` — generate 10-15 random reservations on startup
+- [x] `GET /api/tables` — all tables with current status
+- [x] `POST /api/reservations` — create booking with overlap check
+- [x] `POST /api/reservations/reset` — regenerate random reservations
+- [x] `CorsConfig` for frontend dev
+- [x] Manual test with curl
 
 ### Phase 2: Recommendation Engine (`feat/recommendation-engine`)
 - [ ] `RecommendationService` with scoring algorithm

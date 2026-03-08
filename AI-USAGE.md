@@ -56,3 +56,4 @@ This project was built almost entirely with AI tools. My role was directing the 
 | 2026-03-07 | Architecture | Proposed domain model, API contract, scoring algorithm | Reviewed naming, relationship design, scoring weights |
 | 2026-03-07 | Documentation | Drafted README, ARCHITECTURE, ASSUMPTIONS, AI-USAGE | Reviewed tone, accuracy, completeness |
 | 2026-03-07 | Scaffolding | Generated Spring Boot + React project setup | Verified both projects start cleanly |
+| 2026-03-08 | Backend Core | Generated entities (RestaurantTable, Reservation, TableFeature), repositories, services, controllers, DataInitializer, CorsConfig, ReservationRequest DTO via parallel sub-agents | Instructed AI to split work between sub-agents, created branch, reviewed and approved commands, tested all endpoints with curl and H2 console |
