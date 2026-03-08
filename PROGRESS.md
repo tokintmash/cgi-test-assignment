@@ -6,7 +6,7 @@
 |---|---|---|---|---|
 | 0 | Project scaffolding & documentation | `main` | ✅ Done | — |
 | 1 | Backend core (entities, repos, seed data, API) | `feat/backend-core` | ✅ Done | Phase 0 |
-| 2 | Recommendation engine + unit tests | `feat/recommendation-engine` | ⬜ Not started | Phase 1 |
+| 2 | Recommendation engine + unit tests | `feat/recommendation-engine` | ✅ Done | Phase 1 |
 | 3 | Frontend (search, floor plan, booking) | `feat/frontend-ui` | ⬜ Not started | Phase 2 |
 | 4 | Integration, polish & testing | `fix/integration-polish` | ⬜ Not started | Phase 3 |
 | 5 | Docker | `feat/docker` | ⬜ Not started | Phase 4 |
@@ -41,16 +41,16 @@
 - [x] `CorsConfig` for frontend dev
 - [x] Manual test with curl
 
-### Phase 2: Recommendation Engine (`feat/recommendation-engine`)
-- [ ] `RecommendationService` with scoring algorithm
-- [ ] Score breakdown in response (efficiency, preference, zone, base)
-- [ ] `POST /api/tables/search` — search with ranked recommendations
-- [ ] Search request DTO with validation
-- [ ] Unit tests: perfect match
-- [ ] Unit tests: partial match
-- [ ] Unit tests: no preferences
-- [ ] Unit tests: oversized table penalty
-- [ ] Unit tests: no results
+### Phase 2: Recommendation Engine (`feat/recommendation-engine`) ✅
+- [x] `RecommendationService` with scoring algorithm
+- [x] Score breakdown in response (efficiency, preference, zone, base)
+- [x] `POST /api/tables/search` — search with ranked recommendations
+- [x] Search request DTO with validation
+- [x] Unit tests: perfect match
+- [x] Unit tests: partial match
+- [x] Unit tests: no preferences
+- [x] Unit tests: oversized table penalty
+- [x] Unit tests: no results
 
 ### Phase 3: Frontend UI (`feat/frontend-ui`)
 - [ ] TypeScript types/interfaces matching API contract
