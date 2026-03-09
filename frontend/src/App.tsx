@@ -257,6 +257,14 @@ function App() {
         <p>Search by party, time, and preferences, then click a table on the map or in the ranking to book.</p>
       </header>
 
+      <SearchForm
+        value={searchRequest}
+        zones={zones}
+        isLoading={searchLoading}
+        onChange={setSearchRequest}
+        onSubmit={handleSearchSubmit}
+      />
+
       {successMessage && <p className="status-banner success">{successMessage}</p>}
       {tablesError && <p className="status-banner error">{tablesError}</p>}
       {searchError && <p className="status-banner error">{searchError}</p>}
@@ -274,14 +282,6 @@ function App() {
         </div>
 
         <div className="right-column">
-          <SearchForm
-            value={searchRequest}
-            zones={zones}
-            isLoading={searchLoading}
-            onChange={setSearchRequest}
-            onSubmit={handleSearchSubmit}
-          />
-
           <RecommendationPanel
             recommendations={recommendations}
             isLoading={searchLoading}

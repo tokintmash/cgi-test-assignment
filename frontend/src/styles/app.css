@@ -40,7 +40,7 @@
 .layout-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr);
   align-items: start;
 }
 

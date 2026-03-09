@@ -45,58 +45,64 @@ export function SearchForm({ value, zones, isLoading, onChange, onSubmit }: Sear
     <section className="card-panel search-panel" aria-label="Search tables">
       <h2 className="panel-title">Search tables</h2>
       <form className="search-form" onSubmit={handleSubmit}>
-        <label>
-          Date
-          <input type="date" name="date" value={value.date} onChange={handleInputChange} required />
-        </label>
+        <div className="search-row search-row-main">
+          <label>
+            Date
+            <input type="date" name="date" value={value.date} onChange={handleInputChange} required />
+          </label>
 
-        <label>
-          Start time
-          <input
-            type="time"
-            name="startTime"
-            value={value.startTime}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+          <label>
+            Start time
+            <input
+              type="time"
+              name="startTime"
+              value={value.startTime}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
 
-        <label>
-          Party size
-          <input
-            type="number"
-            name="partySize"
-            min={1}
-            value={value.partySize}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+          <label>
+            Party size
+            <input
+              type="number"
+              name="partySize"
+              min={1}
+              value={value.partySize}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
 
-        <label>
-          Duration (minutes)
-          <input
-            type="number"
-            name="duration"
-            min={30}
-            step={30}
-            value={value.duration}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
+          <label>
+            Duration (minutes)
+            <input
+              type="number"
+              name="duration"
+              min={30}
+              step={30}
+              value={value.duration}
+              onChange={handleInputChange}
+              required
+            />
+          </label>
 
-        <label>
-          Zone
-          <select name="zone" value={value.zone ?? ''} onChange={handleInputChange}>
-            <option value="">Any zone</option>
-            {zones.map((zone) => (
-              <option key={zone} value={zone}>
-                {zone}
-              </option>
-            ))}
-          </select>
-        </label>
+          <label>
+            Zone
+            <select name="zone" value={value.zone ?? ''} onChange={handleInputChange}>
+              <option value="">Any zone</option>
+              {zones.map((zone) => (
+                <option key={zone} value={zone}>
+                  {zone}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button type="submit" className="primary-button search-submit" disabled={isLoading}>
+            Search
+          </button>
+        </div>
 
         <fieldset className="search-preferences">
           <legend>Preferences</legend>
@@ -111,10 +117,6 @@ export function SearchForm({ value, zones, isLoading, onChange, onSubmit }: Sear
             </label>
           ))}
         </fieldset>
-
-        <button type="submit" className="primary-button" disabled={isLoading}>
-          {isLoading ? 'Searching...' : 'Find recommendations'}
-        </button>
       </form>
     </section>
   )

@@ -33,13 +33,6 @@ export function TableShape({ table, visualState, selectable, statusLabel, onSele
     }
   }
 
-  const shape =
-    table.shape === 'round' ? (
-      <circle cx={table.posX + table.width / 2} cy={table.posY + table.height / 2} r={Math.min(table.width, table.height) / 2} />
-    ) : (
-      <rect x={table.posX} y={table.posY} width={table.width} height={table.height} rx={12} />
-    )
-
   return (
     <g
       className={classes}
@@ -51,7 +44,7 @@ export function TableShape({ table, visualState, selectable, statusLabel, onSele
       aria-disabled={!selectable}
     >
       <title>{`${table.name} · ${table.capacity} seats · ${statusLabel}`}</title>
-      {shape}
+      <rect x={table.posX} y={table.posY} width={table.width} height={table.height} rx={12} />
       <text x={table.posX + table.width / 2} y={table.posY + table.height / 2 + 4} textAnchor="middle">
         {table.name}
       </text>
