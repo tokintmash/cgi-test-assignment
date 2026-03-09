@@ -28,7 +28,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(236, 241, 255, 0.35);
 }
 
 .swatch-available {
@@ -52,7 +52,7 @@
   border: 1px solid var(--color-border-soft);
   border-radius: 14px;
   overflow: hidden;
-  background: linear-gradient(180deg, #fffaf2, #f7f9ff);
+  background: linear-gradient(180deg, #0f1624, #172134);
 }
 
 .floor-svg {
@@ -67,15 +67,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(10, 15, 24, 0.7);
   z-index: 2;
   font-weight: 600;
   color: var(--color-text-primary);
 }
 
 .zone rect {
-  fill: rgba(255, 255, 255, 0.62);
-  stroke: #d8dce8;
+  fill: rgba(255, 255, 255, 0.04);
+  stroke: #3a4b68;
   stroke-width: 2;
   stroke-dasharray: 4 6;
 }
@@ -84,19 +84,19 @@
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  fill: #52607a;
+  fill: #9fb0d0;
 }
 
 .table-shape text {
   font-size: 13px;
   font-weight: 700;
-  fill: #12203d;
+  fill: #f3f7ff;
   pointer-events: none;
 }
 
 .table-shape rect,
 .table-shape circle {
-  stroke: #24324d;
+  stroke: #0f1521;
   stroke-width: 1.2;
   transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
   transform-box: fill-box;
@@ -105,7 +105,7 @@
 
 .table-default rect,
 .table-default circle {
-  fill: #c8cfdf;
+  fill: #66738c;
 }
 
 .table-available rect,

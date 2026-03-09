@@ -4,13 +4,22 @@
   --color-recommended: #FFD700;
   --color-selected: #2196F3;
 
-  --color-bg: #f4f5fb;
-  --color-surface: #ffffff;
-  --color-border-soft: #d9deea;
-  --color-text-primary: #1c2740;
-  --color-text-secondary: #4e5d7c;
-  --color-text-accent: #0d6d86;
-  --shadow-soft: 0 10px 24px rgba(34, 52, 89, 0.08);
+  --color-bg: #0b1018;
+  --color-surface: #121926;
+  --color-surface-alt: #1a2435;
+  --color-border-soft: #2c3a52;
+  --color-text-primary: #ecf1ff;
+  --color-text-secondary: #aab6d1;
+  --color-text-accent: #7fd9f7;
+  --color-input-bg: #0f1624;
+  --color-input-border: #33445f;
+  --color-success-bg: #13311f;
+  --color-success-text: #9eeab3;
+  --color-success-border: #2f7b47;
+  --color-error-bg: #37191f;
+  --color-error-text: #ffb4b0;
+  --color-error-border: #80414a;
+  --shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.38);
 
   font-family: 'Trebuchet MS', 'Avenir Next', 'Gill Sans', 'Segoe UI', sans-serif;
   line-height: 1.45;
@@ -31,9 +40,9 @@ body {
   min-width: 320px;
   color: var(--color-text-primary);
   background:
-    radial-gradient(circle at 8% 12%, rgba(255, 223, 117, 0.3), transparent 24%),
-    radial-gradient(circle at 92% 16%, rgba(33, 150, 243, 0.17), transparent 20%),
-    linear-gradient(180deg, #fefcf7, var(--color-bg));
+    radial-gradient(circle at 8% 12%, rgba(255, 223, 117, 0.08), transparent 24%),
+    radial-gradient(circle at 92% 16%, rgba(33, 150, 243, 0.1), transparent 20%),
+    linear-gradient(180deg, #070b11, var(--color-bg));
 }
 
 h1,

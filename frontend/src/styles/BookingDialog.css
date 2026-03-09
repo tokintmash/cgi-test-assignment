@@ -11,7 +11,7 @@
 
 .booking-dialog {
   width: min(460px, 100%);
-  background: #ffffff;
+  background: var(--color-surface);
   border-radius: 16px;
   border: 1px solid var(--color-border-soft);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
@@ -49,8 +49,10 @@
 .booking-form input {
   min-height: 40px;
   border-radius: 10px;
-  border: 1px solid var(--color-border-soft);
+  border: 1px solid var(--color-input-border);
   padding: 0 10px;
+  background: var(--color-input-bg);
+  color: var(--color-text-primary);
   font: inherit;
 }
 
@@ -61,7 +63,7 @@
 
 .dialog-error {
   margin: 0;
-  color: #ad352f;
+  color: var(--color-error-text);
   font-size: 0.86rem;
   font-weight: 600;
 }

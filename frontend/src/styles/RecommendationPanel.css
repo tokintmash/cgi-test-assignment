@@ -16,11 +16,11 @@
   padding: 12px;
   display: grid;
   gap: 10px;
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .recommendation-item.selected {
-  border-color: #7fb2ff;
+  border-color: var(--color-selected);
   box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
 }
 
@@ -32,22 +32,9 @@
   margin: 0;
   text-align: left;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
   cursor: pointer;
-}
-
-.rank-badge {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 700;
-  background: #e8f0ff;
-  color: #275bb8;
 }
 
 .recommendation-summary h3 {
@@ -60,10 +47,6 @@
   margin: 2px 0 0;
   color: var(--color-text-secondary);
   font-size: 0.88rem;
-}
-
-.recommendation-features {
-  font-style: italic;
 }
 
 .recommendation-item .secondary-button {

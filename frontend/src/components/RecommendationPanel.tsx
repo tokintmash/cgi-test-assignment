@@ -1,6 +1,4 @@
 import type { TableRecommendation } from '../types'
-import { featureLabel } from '../utils/featureLabels'
-import { ScoreBreakdown } from './ScoreBreakdown'
 import '../styles/RecommendationPanel.css'
 
 interface RecommendationPanelProps {
@@ -33,7 +31,7 @@ export function RecommendationPanel({
 
       {hasSearched && !isLoading && recommendations.length > 0 && (
         <ol className="recommendation-list">
-          {recommendations.map((recommendation, index) => {
+          {recommendations.map((recommendation) => {
             const isSelected = selectedTableId === recommendation.tableId
             return (
               <li key={recommendation.tableId} className={isSelected ? 'recommendation-item selected' : 'recommendation-item'}>
@@ -42,23 +40,12 @@ export function RecommendationPanel({
                   className="recommendation-summary"
                   onClick={() => onSelect(recommendation.tableId)}
                 >
-                  <span className="rank-badge">#{index + 1}</span>
                   <div>
-                    <h3>
-                      {recommendation.tableName} · {recommendation.zone}
-                    </h3>
-                    <p>
-                      Capacity {recommendation.capacity} · Score {recommendation.score.toFixed(2)}
-                    </p>
-                    <p className="recommendation-features">
-                      {recommendation.features.length > 0
-                        ? recommendation.features.map((feature) => featureLabel(feature)).join(' • ')
-                        : 'No special features'}
-                    </p>
+                    <h3>{recommendation.tableName}</h3>
+                    <p>Zone: {recommendation.zone}</p>
+                    <p>Capacity: {recommendation.capacity}</p>
                   </div>
                 </button>
-
-                <ScoreBreakdown breakdown={recommendation.scoreBreakdown} />
 
                 <button type="button" className="secondary-button" onClick={() => onBook(recommendation.tableId)}>
                   Book this table

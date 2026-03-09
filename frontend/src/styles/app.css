@@ -8,7 +8,7 @@
 }
 
 .app-header {
-  background: linear-gradient(130deg, #fff5d6 0%, #f4f7ff 50%, #ffe8da 100%);
+  background: linear-gradient(130deg, #1e2d45 0%, #1a2538 50%, #2a2033 100%);
   border: 1px solid var(--color-border-soft);
   border-radius: 20px;
   padding: 20px;
@@ -72,15 +72,15 @@
 }
 
 .status-banner.success {
-  background: #e7f6e8;
-  color: #2f6b33;
-  border: 1px solid #bedfbf;
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
 }
 
 .status-banner.error {
-  background: #ffe9e8;
-  color: #932d28;
-  border: 1px solid #f6c6c3;
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
 }
 
 .panel-state {
@@ -103,17 +103,18 @@
 
 .primary-button {
   background: #1f6feb;
-  color: #ffffff;
+  color: #ecf1ff;
 }
 
 .secondary-button {
-  background: #f2f4fa;
-  color: #1f2a44;
+  background: var(--color-surface-alt);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-soft);
 }
 
 .ghost-button {
   background: transparent;
-  color: #1f2a44;
+  color: var(--color-text-primary);
   border: 1px solid var(--color-border-soft);
 }
 
