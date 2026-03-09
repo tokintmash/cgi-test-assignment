@@ -1,0 +1,170 @@
+.floor-plan-panel {
+  animation: rise-in 460ms ease;
+}
+
+.panel-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.swatch-available {
+  background: var(--color-available);
+}
+
+.swatch-reserved {
+  background: var(--color-reserved);
+}
+
+.swatch-recommended {
+  background: var(--color-recommended);
+}
+
+.swatch-selected {
+  background: var(--color-selected);
+}
+
+.svg-wrapper {
+  position: relative;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fffaf2, #f7f9ff);
+}
+
+.floor-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.plan-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.72);
+  z-index: 2;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.zone rect {
+  fill: rgba(255, 255, 255, 0.62);
+  stroke: #d8dce8;
+  stroke-width: 2;
+  stroke-dasharray: 4 6;
+}
+
+.zone-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  fill: #52607a;
+}
+
+.table-shape text {
+  font-size: 13px;
+  font-weight: 700;
+  fill: #12203d;
+  pointer-events: none;
+}
+
+.table-shape rect,
+.table-shape circle {
+  stroke: #24324d;
+  stroke-width: 1.2;
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.table-default rect,
+.table-default circle {
+  fill: #c8cfdf;
+}
+
+.table-available rect,
+.table-available circle {
+  fill: var(--color-available);
+}
+
+.table-reserved rect,
+.table-reserved circle {
+  fill: var(--color-reserved);
+}
+
+.table-recommended rect,
+.table-recommended circle {
+  fill: var(--color-recommended);
+  animation: recommended-pulse 1.6s ease-in-out infinite;
+}
+
+.table-selected rect,
+.table-selected circle {
+  fill: var(--color-selected);
+}
+
+.table-clickable {
+  cursor: pointer;
+}
+
+.table-clickable:hover rect,
+.table-clickable:hover circle,
+.table-clickable:focus rect,
+.table-clickable:focus circle {
+  transform: scale(1.04);
+  filter: drop-shadow(0 3px 6px rgba(27, 41, 70, 0.23));
+}
+
+.table-clickable:focus {
+  outline: none;
+}
+
+.table-clickable:focus rect,
+.table-clickable:focus circle {
+  stroke-width: 2;
+}
+
+.table-disabled {
+  cursor: not-allowed;
+}
+
+.table-disabled rect,
+.table-disabled circle {
+  opacity: 0.9;
+}
+
+@keyframes recommended-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.08);
+  }
+}

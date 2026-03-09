@@ -1,0 +1,70 @@
+.search-panel {
+  animation: rise-in 440ms ease;
+}
+
+.search-form {
+  display: grid;
+  gap: 12px;
+}
+
+.search-form label,
+.search-preferences legend {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.search-form input,
+.search-form select {
+  width: 100%;
+  margin-top: 6px;
+  min-height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-soft);
+  padding: 0 10px;
+  background: #ffffff;
+  color: var(--color-text-primary);
+  font: inherit;
+}
+
+.search-form input:focus,
+.search-form select:focus {
+  outline: 3px solid rgba(31, 111, 235, 0.2);
+  border-color: #1f6feb;
+}
+
+.search-preferences {
+  border: 1px solid var(--color-border-soft);
+  border-radius: 12px;
+  margin: 0;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.checkbox-label input {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  min-height: 16px;
+}
+
+.search-form .primary-button {
+  width: 100%;
+  margin-top: 2px;
+}
+
+@media (max-width: 640px) {
+  .search-preferences {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,153 @@
+.app-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-header {
+  background: linear-gradient(130deg, #fff5d6 0%, #f4f7ff 50%, #ffe8da 100%);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow-soft);
+  animation: rise-in 420ms ease;
+}
+
+.app-header h1 {
+  margin: 6px 0 8px;
+  font-size: clamp(1.7rem, 2.1vw, 2.3rem);
+  letter-spacing: 0.01em;
+}
+
+.app-header p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  max-width: 72ch;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-text-accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.75rem;
+}
+
+.layout-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+.left-column,
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  padding: 16px;
+}
+
+.panel-title {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.status-banner {
+  margin: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+}
+
+.status-banner.success {
+  background: #e7f6e8;
+  color: #2f6b33;
+  border: 1px solid #bedfbf;
+}
+
+.status-banner.error {
+  background: #ffe9e8;
+  color: #932d28;
+  border: 1px solid #f6c6c3;
+}
+
+.panel-state {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.primary-button,
+.secondary-button,
+.ghost-button {
+  border: 0;
+  border-radius: 12px;
+  min-height: 42px;
+  padding: 0 14px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+
+.primary-button {
+  background: #1f6feb;
+  color: #ffffff;
+}
+
+.secondary-button {
+  background: #f2f4fa;
+  color: #1f2a44;
+}
+
+.ghost-button {
+  background: transparent;
+  color: #1f2a44;
+  border: 1px solid var(--color-border-soft);
+}
+
+.primary-button:hover,
+.secondary-button:hover,
+.ghost-button:hover {
+  transform: translateY(-1px);
+}
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.ghost-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 980px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell {
+    padding: 14px;
+  }
+}

@@ -7,7 +7,7 @@
 | 0 | Project scaffolding & documentation | `main` | ✅ Done | — |
 | 1 | Backend core (entities, repos, seed data, API) | `feat/backend-core` | ✅ Done | Phase 0 |
 | 2 | Recommendation engine + unit tests | `feat/recommendation-engine` | ✅ Done | Phase 1 |
-| 3 | Frontend (search, floor plan, booking) | `feat/frontend-ui` | ⬜ Not started | Phase 2 |
+| 3 | Frontend (search, floor plan, booking) | `feat/frontend-ui` | ✅ Done | Phase 2 |
 | 4 | Integration, polish & testing | `fix/integration-polish` | ⬜ Not started | Phase 3 |
 | 5 | Docker | `feat/docker` | ⬜ Not started | Phase 4 |
 | 6 | Documentation & submission | `docs/final` | ⬜ Not started | Phase 5 |
@@ -53,16 +53,16 @@
 - [x] Unit tests: no results
 
 ### Phase 3: Frontend UI (`feat/frontend-ui`)
-- [ ] TypeScript types/interfaces matching API contract
-- [ ] API client (`reservationApi.ts`)
-- [ ] `SearchForm` component (date, time, party size, zone, preferences)
-- [ ] `FloorPlan` SVG component with zones and table rendering
-- [ ] `TableShape` component with color states (available/reserved/recommended/selected)
-- [ ] `RecommendationPanel` with ranked results and score breakdown
-- [ ] `BookingDialog` confirmation
-- [ ] Wire full flow: search → recommendations → select → book → update
-- [ ] Loading, error, and empty states
-- [ ] CSS styling and layout
+- [x] TypeScript types/interfaces matching API contract
+- [x] API client (`reservationApi.ts`)
+- [x] `SearchForm` component (date, time, party size, zone, preferences)
+- [x] `FloorPlan` SVG component with zones and table rendering
+- [x] `TableShape` component with color states (available/reserved/recommended/selected)
+- [x] `RecommendationPanel` with ranked results and score breakdown
+- [x] `BookingDialog` confirmation
+- [x] Wire full flow: search → recommendations → select → book → update
+- [x] Loading, error, and empty states
+- [x] CSS styling and layout
 
 ### Phase 4: Integration & Polish (`fix/integration-polish`)
 - [ ] End-to-end flow testing
