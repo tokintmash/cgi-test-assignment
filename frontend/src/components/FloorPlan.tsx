@@ -84,26 +84,26 @@ export function FloorPlan({
         {isLoading && <div className="plan-overlay">Refreshing availability...</div>}
         <svg viewBox="0 0 700 520" className="floor-svg" preserveAspectRatio="xMidYMid meet">
           <g className="zone zone-window">
-            <rect x={20} y={20} width={130} height={470} rx={18} />
-            <text x={35} y={48} className="zone-label">
+            <rect x={15} y={15} width={140} height={375} rx={18} />
+            <text x={30} y={43} className="zone-label">
               Window
             </text>
           </g>
           <g className="zone zone-main">
-            <rect x={180} y={20} width={300} height={360} rx={18} />
-            <text x={195} y={48} className="zone-label">
+            <rect x={170} y={15} width={320} height={375} rx={18} />
+            <text x={185} y={43} className="zone-label">
               Main Hall
             </text>
           </g>
           <g className="zone zone-private">
-            <rect x={500} y={20} width={170} height={360} rx={18} />
-            <text x={515} y={48} className="zone-label">
+            <rect x={505} y={15} width={180} height={375} rx={18} />
+            <text x={520} y={43} className="zone-label">
               Private
             </text>
           </g>
           <g className="zone zone-terrace">
-            <rect x={180} y={390} width={380} height={100} rx={18} />
-            <text x={195} y={418} className="zone-label">
+            <rect x={170} y={405} width={515} height={100} rx={18} />
+            <text x={185} y={433} className="zone-label">
               Terrace
             </text>
           </g>
