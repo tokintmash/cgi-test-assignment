@@ -165,7 +165,7 @@ function App() {
 
     try {
       const response = await reservationApi.searchTables(criteria)
-      setRecommendations(response.recommendations)
+      setRecommendations(response.recommendations.slice(0, 5))
       setStatusByTableId(toStatusMap(response.allTables))
       setHasSearched(true)
 
@@ -263,14 +263,6 @@ function App() {
 
       <main className="layout-grid">
         <div className="left-column">
-          <SearchForm
-            value={searchRequest}
-            zones={zones}
-            isLoading={searchLoading}
-            onChange={setSearchRequest}
-            onSubmit={handleSearchSubmit}
-          />
-
           <FloorPlan
             tables={tables}
             statusByTableId={statusByTableId}
@@ -282,6 +274,14 @@ function App() {
         </div>
 
         <div className="right-column">
+          <SearchForm
+            value={searchRequest}
+            zones={zones}
+            isLoading={searchLoading}
+            onChange={setSearchRequest}
+            onSubmit={handleSearchSubmit}
+          />
+
           <RecommendationPanel
             recommendations={recommendations}
             isLoading={searchLoading}
