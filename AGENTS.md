@@ -111,6 +111,8 @@ docs/             Screenshots and supplementary documentation
 - The current accepted recommendation card layout may omit score breakdown even when score data is returned by the API.
 - The current accepted floor plan may render tables with a uniform visual shape instead of matching the backend `shape` field.
 - Hover tooltips and stronger visual differentiation for recommended vs selected tables are deferred polish items unless the user explicitly requests them.
+- The current feature assignments per table are intentional: `NEAR_PLAY_AREA` is on M6, M7, P3, T3, T4 (not on T1/T2); `ACCESSIBLE` is on W4, M3, M6, M7, T2, T3 (not on W3). Do not flag these as inconsistencies with zone names.
+- The Main Hall zone rect is intentionally fully transparent. The "PLAY AREA" label inside it is a visual annotation, not a separate zone entity.
 
 ## Code Attribution
 

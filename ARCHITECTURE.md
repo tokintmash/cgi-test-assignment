@@ -50,9 +50,9 @@ The restaurant has 4 zones with approximately 15-20 tables:
 | Zone | Description | Typical features |
 |---|---|---|
 | Window | Tables along the window wall | `WINDOW`, sometimes `ACCESSIBLE` |
-| Main Hall | Central dining area | General seating, largest tables |
-| Private | Enclosed/semi-enclosed area | `PRIVATE` |
-| Terrace | Outdoor/near-outdoor seating | `NEAR_PLAY_AREA` on some tables |
+| Main Hall | Central dining area, adjacent to play area | Largest tables; some have `ACCESSIBLE`, `NEAR_PLAY_AREA` |
+| Private | Enclosed/semi-enclosed area | `PRIVATE`; lowest table also `NEAR_PLAY_AREA` |
+| Terrace | Outdoor/near-outdoor seating | Some tables `NEAR_PLAY_AREA`, some `ACCESSIBLE`, some with no features |
 
 Table capacities range from 2 to 8. Shapes are rectangular or round.
 
