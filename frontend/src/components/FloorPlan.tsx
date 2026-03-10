@@ -97,6 +97,9 @@ export function FloorPlan({
             <text x={500} y={370} className="zone-label" textAnchor="middle">
               PLAY AREA
             </text>
+            <text x={60} y={385} className="zone-label" textAnchor="middle">
+              ENTRANCE
+            </text>
           </g>
           <g className="zone zone-private">
             <rect x={510} y={-10} width={180} height={320} rx={18} />
@@ -120,9 +123,9 @@ export function FloorPlan({
             <line x1={576} y1={201} x2={690} y2={201} stroke="white" strokeWidth={2} />
             <line x1={576} y1={310} x2={690} y2={310} stroke="white" strokeWidth={2} />
             {/* Window (left wall, glass) */}
-            <line x1={10} y1={-10} x2={10} y2={290} stroke="#7EC8E3" strokeWidth={3} />
+            <line x1={10} y1={10} x2={10} y2={290} stroke="#7EC8E3" strokeWidth={3} />
             {/* Entrance (gap between Window and Terrace zones) */}
-            <line x1={10} y1={310} x2={10} y2={450} stroke="#D4915E" strokeWidth={3} />
+            <line x1={10} y1={330} x2={10} y2={430} stroke="#D4915E" strokeWidth={3} />
           </g>
 
           {tables.map((table) => {

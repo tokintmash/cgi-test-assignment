@@ -1,4 +1,4 @@
-import type { ChangeEvent, FormEvent } from 'react'
+import { useRef, type ChangeEvent, type FormEvent } from 'react'
 import type { SearchRequest, TableFeature } from '../types'
 import { featureOptions } from '../utils/featureLabels'
 import '../styles/SearchForm.css'
@@ -12,6 +12,12 @@ interface SearchFormProps {
 }
 
 export function SearchForm({ value, zones, isLoading, onChange, onSubmit }: SearchFormProps) {
+  const dateRef = useRef<HTMLInputElement>(null)
+
+  const handleDateClick = () => {
+    dateRef.current?.showPicker()
+  }
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value: nextValue } = event.target
 
@@ -41,6 +47,21 @@ export function SearchForm({ value, zones, isLoading, onChange, onSubmit }: Sear
     onSubmit(value)
   }
 
+  const timeSlots = (() => {
+    const slots: string[] = []
+    for (let h = 10; h <= 22; h++) {
+      for (const m of [0, 30]) {
+        if (h === 22 && m === 30) break
+        slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
+      }
+    }
+    return slots
+  })()
+
+  const durationOptions = [30, 60, 90, 120, 150, 180]
+
+  const partySizeOptions = Array.from({ length: 20 }, (_, i) => i + 1)
+
   return (
     <section className="card-panel search-panel" aria-label="Search tables">
       <h2 className="panel-title">Search tables</h2>
@@ -48,43 +69,48 @@ export function SearchForm({ value, zones, isLoading, onChange, onSubmit }: Sear
         <div className="search-row search-row-main">
           <label>
             Date
-            <input type="date" name="date" value={value.date} onChange={handleInputChange} required />
+            <input
+              ref={dateRef}
+              type="date"
+              name="date"
+              value={value.date}
+              onChange={handleInputChange}
+              onClick={handleDateClick}
+              required
+            />
           </label>
 
           <label>
             Start time
-            <input
-              type="time"
-              name="startTime"
-              value={value.startTime}
-              onChange={handleInputChange}
-              required
-            />
+            <select name="startTime" value={value.startTime} onChange={handleInputChange} required>
+              {timeSlots.map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label>
             Party size
-            <input
-              type="number"
-              name="partySize"
-              min={1}
-              value={value.partySize}
-              onChange={handleInputChange}
-              required
-            />
+            <select name="partySize" value={value.partySize} onChange={handleInputChange} required>
+              {partySizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size} {size === 1 ? 'guest' : 'guests'}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label>
-            Duration (minutes)
-            <input
-              type="number"
-              name="duration"
-              min={30}
-              step={30}
-              value={value.duration}
-              onChange={handleInputChange}
-              required
-            />
+            Duration
+            <select name="duration" value={value.duration} onChange={handleInputChange} required>
+              {durationOptions.map((mins) => (
+                <option key={mins} value={mins}>
+                  {mins >= 60 ? `${mins / 60 >= 1 && mins % 60 ? `${Math.floor(mins / 60)}.5h` : `${mins / 60}h`}` : `${mins}m`}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label>
@@ -104,19 +130,23 @@ export function SearchForm({ value, zones, isLoading, onChange, onSubmit }: Sear
           </button>
         </div>
 
-        <fieldset className="search-preferences">
-          <legend>Preferences</legend>
-          {featureOptions.map((option) => (
-            <label key={option.value} className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={value.preferences.includes(option.value)}
-                onChange={() => handlePreferenceChange(option.value)}
-              />
-              <span>{option.label}</span>
-            </label>
-          ))}
-        </fieldset>
+        <div className="search-preferences" role="group" aria-label="Preferences">
+          <span className="preferences-label">Preferences</span>
+          {featureOptions.map((option) => {
+            const isActive = value.preferences.includes(option.value)
+            return (
+              <button
+                key={option.value}
+                type="button"
+                className={`preference-tag${isActive ? ' active' : ''}`}
+                aria-pressed={isActive}
+                onClick={() => handlePreferenceChange(option.value)}
+              >
+                {option.label}
+              </button>
+            )
+          })}
+        </div>
       </form>
     </section>
   )
