@@ -106,6 +106,12 @@ docs/             Screenshots and supplementary documentation
 
 **`PROBLEMS.md` must be updated whenever an issue is encountered and resolved.** When debugging a bug, fixing a build failure, resolving a dependency conflict, or working around a limitation, append a row to the table in `PROBLEMS.md` with the problem, its cause, the solution, and today's date.
 
+## UI Review Baseline
+
+- The current accepted recommendation card layout may omit score breakdown even when score data is returned by the API.
+- The current accepted floor plan may render tables with a uniform visual shape instead of matching the backend `shape` field.
+- Hover tooltips and stronger visual differentiation for recommended vs selected tables are deferred polish items unless the user explicitly requests them.
+
 ## Code Attribution
 
 This project is built almost entirely with AI. Human-written code is marked with `// HUMAN` comments. All other code is AI-generated.

@@ -41,7 +41,7 @@
   display: grid;
   gap: 16px;
   grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr);
-  align-items: start;
+  align-items: stretch;
 }
 
 .left-column,
@@ -49,6 +49,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
 }
 
 .card-panel {

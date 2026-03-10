@@ -58,11 +58,17 @@
 - [x] `SearchForm` component (date, time, party size, zone, preferences)
 - [x] `FloorPlan` SVG component with zones and table rendering
 - [x] `TableShape` component with color states (available/reserved/recommended/selected)
-- [x] `RecommendationPanel` with ranked results and score breakdown
+- [x] `RecommendationPanel` with ranked results
 - [x] `BookingDialog` confirmation
 - [x] Wire full flow: search → recommendations → select → book → update
 - [x] Loading, error, and empty states
 - [x] CSS styling and layout
+
+### Review Baseline
+
+- Do not flag the current UI for omitting score breakdown inside recommendation cards; score data may exist in the API without being surfaced in the card layout.
+- Do not flag the current floor plan for rendering a uniform table shape; preserving per-table visual shapes is optional unless explicitly requested.
+- Treat hover tooltips and stronger recommended/selected state emphasis as deferred polish for a later phase, not current defects by default.
 
 ### Phase 4: Integration & Polish (`fix/integration-polish`)
 - [ ] End-to-end flow testing

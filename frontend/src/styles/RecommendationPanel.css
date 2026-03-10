@@ -1,5 +1,6 @@
 .recommendation-panel {
   animation: rise-in 500ms ease;
+  height: 100%;
 }
 
 .recommendation-list {
@@ -47,6 +48,12 @@
   margin: 2px 0 0;
   color: var(--color-text-secondary);
   font-size: 0.88rem;
+}
+
+.recommendation-meta {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .recommendation-item .secondary-button {

@@ -42,8 +42,9 @@ export function RecommendationPanel({
                 >
                   <div>
                     <h3>{recommendation.tableName}</h3>
-                    <p>Zone: {recommendation.zone}</p>
-                    <p>Capacity: {recommendation.capacity}</p>
+                    <p className="recommendation-meta">
+                      {recommendation.zone} · Seats: {recommendation.capacity}
+                    </p>
                   </div>
                 </button>
 

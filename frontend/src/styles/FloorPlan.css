@@ -1,5 +1,8 @@
 .floor-plan-panel {
   animation: rise-in 460ms ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .panel-header-row {
@@ -53,12 +56,14 @@
   border-radius: 14px;
   overflow: hidden;
   background: linear-gradient(180deg, #0f1624, #172134);
+  flex: 1;
+  min-height: 0;
 }
 
 .floor-svg {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 .plan-overlay {
