@@ -84,7 +84,7 @@ export function FloorPlan({
         {isLoading && <div className="plan-overlay">Refreshing availability...</div>}
         <svg viewBox="0 0 700 540" className="floor-svg" preserveAspectRatio="xMidYMid meet">
           <g className="zone zone-window">
-            <rect x={10} y={-10} width={145} height={445} rx={18} />
+            <rect x={10} y={-10} width={145} height={320} rx={18} />
             <text x={30} y={15} className="zone-label">
               Window
             </text>
@@ -96,7 +96,7 @@ export function FloorPlan({
             </text>
           </g>
           <g className="zone zone-private">
-            <rect x={510} y={-10} width={180} height={445} rx={18} />
+            <rect x={510} y={-10} width={180} height={320} rx={18} />
             <text x={520} y={15} className="zone-label">
               Private
             </text>
@@ -106,6 +106,20 @@ export function FloorPlan({
             <text x={30} y={470} className="zone-label">
               Terrace
             </text>
+          </g>
+
+          {/* Walls */}
+          <g className="walls">
+            {/* Vertical wall between Main Hall and Private */}
+            <line x1={503} y1={-10} x2={503} y2={310} stroke="white" strokeWidth={2} />
+            {/* Horizontal walls separating Private tables */}
+            <line x1={576} y1={103} x2={690} y2={103} stroke="white" strokeWidth={2} />
+            <line x1={576} y1={201} x2={690} y2={201} stroke="white" strokeWidth={2} />
+            <line x1={576} y1={310} x2={690} y2={310} stroke="white" strokeWidth={2} />
+            {/* Window (left wall, glass) */}
+            <line x1={10} y1={-10} x2={10} y2={290} stroke="#7EC8E3" strokeWidth={3} />
+            {/* Entrance (gap between Window and Terrace zones) */}
+            <line x1={10} y1={310} x2={10} y2={450} stroke="#D4915E" strokeWidth={3} />
           </g>
 
           {tables.map((table) => {

@@ -56,6 +56,14 @@ The restaurant has 4 zones with approximately 15-20 tables:
 
 Table capacities range from 2 to 8. Shapes are rectangular or round.
 
+### Architectural Elements
+
+The SVG floor plan includes static architectural features rendered as lines:
+
+- **Walls** (white, width 2) — a vertical wall separates Main Hall from the Private zone; three horizontal walls subdivide the Private area into individual rooms.
+- **Window** (light blue `#7EC8E3`, width 3) — runs along the left edge beside the Window zone, representing a glass wall.
+- **Entrance** (terracotta `#D4915E`, width 3) — fills the gap between the Window and Terrace zones on the left edge.
+
 ## API Contract
 
 ### POST `/api/tables/search`

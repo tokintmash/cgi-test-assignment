@@ -39,13 +39,13 @@ public class DataInitializer implements CommandLineRunner {
         tableRepository.save(new RestaurantTable(null, "W4", 4, "Window", 28, 252, 64, 48, "rectangle", Set.of(TableFeature.WINDOW)));
 
         // Main Hall zone (center)
-        tableRepository.save(new RestaurantTable(null, "M1", 4, "Main Hall", 220, 30, 64, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M2", 6, "Main Hall", 212, 128, 80, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M3", 4, "Main Hall", 220, 226, 64, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M4", 8, "Main Hall", 340, 30, 96, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M5", 6, "Main Hall", 348, 128, 80, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M6", 4, "Main Hall", 356, 226, 64, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M7", 2, "Main Hall", 364, 314, 48, 48, "round", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "M1", 4, "Main Hall", 185, 30, 64, 64, "rectangle", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "M2", 6, "Main Hall", 185, 128, 80, 64, "rectangle", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "M3", 4, "Main Hall", 185, 226, 64, 64, "rectangle", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "M4", 8, "Main Hall", 386, 30, 96, 64, "rectangle", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "M5", 6, "Main Hall", 402, 128, 80, 64, "rectangle", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "M6", 4, "Main Hall", 418, 226, 64, 64, "rectangle", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "M7", 2, "Main Hall", 310, 314, 48, 48, "round", Set.of()));
 
         // Private zone (top-right)
         tableRepository.save(new RestaurantTable(null, "P1", 2, "Private", 624, 30, 48, 48, "rectangle", Set.of(TableFeature.PRIVATE)));
