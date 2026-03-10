@@ -5,7 +5,7 @@
 Smart restaurant reservation system with an interactive SVG floor plan and recommendation engine.
 
 - **Backend:** Spring Boot 3.x, Java 21, Maven, H2 in-memory database
-- **Frontend:** React 18, TypeScript, Vite, plain CSS
+- **Frontend:** React 19, TypeScript, Vite, plain CSS
 - **Floor plan:** Raw SVG (no external libraries)
 
 ## Repository Structure
@@ -30,7 +30,7 @@ docs/             Screenshots and supplementary documentation
 
 ### TypeScript (Frontend)
 
-- React 18 with functional components and hooks only (no class components)
+- React 19 with functional components and hooks only (no class components)
 - TypeScript strict mode
 - State management: `useState` / `useReducer` only (no external state libraries)
 - API calls: `fetch` wrapper (no axios)

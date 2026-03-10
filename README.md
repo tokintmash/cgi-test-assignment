@@ -44,7 +44,7 @@ Open `http://localhost:5173` in your browser.
 |---|---|---|
 | Backend | Spring Boot 3.x + Java 21 | Assignment requirement |
 | Database | H2 (in-memory) | Zero configuration, ideal for demo |
-| Frontend | React 18 + TypeScript | Strong ecosystem, type safety, fast dev with Vite |
+| Frontend | React 19 + TypeScript | Strong ecosystem, type safety, fast dev with Vite |
 | Floor plan | SVG (no libraries) | Simple, stylable, accessible, no external dependencies |
 | Build | Maven | Convention in Spring Boot ecosystem |
 

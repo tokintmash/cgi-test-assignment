@@ -2,7 +2,7 @@
 
 ## Stack
 
-- React 18, TypeScript (strict mode), Vite
+- React 19, TypeScript (strict mode), Vite
 - No component libraries (no MUI, no Ant Design)
 - No state libraries (no Redux, no Zustand) — use `useState` / `useReducer`
 - No axios — use `fetch` wrapper

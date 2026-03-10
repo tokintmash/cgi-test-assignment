@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { reservationApi } from './api/reservationApi'
 import { BookingDialog } from './components/BookingDialog'
 import { FloorPlan } from './components/FloorPlan'
@@ -159,7 +159,7 @@ function App() {
     }
   }, [])
 
-  const runSearch = async (criteria: SearchRequest) => {
+  const runSearch = useCallback(async (criteria: SearchRequest) => {
     setSearchLoading(true)
     setSearchError(null)
 
@@ -181,7 +181,7 @@ function App() {
     } finally {
       setSearchLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (tables.length === 0 || autoSearchAttempted) {
