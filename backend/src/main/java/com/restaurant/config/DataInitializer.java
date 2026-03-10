@@ -35,17 +35,17 @@ public class DataInitializer implements CommandLineRunner {
         // Window zone (left wall)
         tableRepository.save(new RestaurantTable(null, "W1", 2, "Window", 28, 30, 48, 48, "round", Set.of(TableFeature.WINDOW)));
         tableRepository.save(new RestaurantTable(null, "W2", 2, "Window", 28, 104, 48, 48, "round", Set.of(TableFeature.WINDOW)));
-        tableRepository.save(new RestaurantTable(null, "W3", 4, "Window", 28, 178, 64, 48, "rectangle", Set.of(TableFeature.WINDOW, TableFeature.ACCESSIBLE)));
-        tableRepository.save(new RestaurantTable(null, "W4", 4, "Window", 28, 252, 64, 48, "rectangle", Set.of(TableFeature.WINDOW)));
+        tableRepository.save(new RestaurantTable(null, "W3", 4, "Window", 28, 178, 64, 48, "rectangle", Set.of(TableFeature.WINDOW)));
+        tableRepository.save(new RestaurantTable(null, "W4", 4, "Window", 28, 252, 64, 48, "rectangle", Set.of(TableFeature.WINDOW, TableFeature.ACCESSIBLE)));
 
         // Main Hall zone (center)
         tableRepository.save(new RestaurantTable(null, "M1", 4, "Main Hall", 185, 30, 64, 64, "rectangle", Set.of()));
         tableRepository.save(new RestaurantTable(null, "M2", 6, "Main Hall", 185, 128, 80, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M3", 4, "Main Hall", 185, 226, 64, 64, "rectangle", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "M3", 4, "Main Hall", 185, 226, 64, 64, "rectangle", Set.of(TableFeature.ACCESSIBLE)));
         tableRepository.save(new RestaurantTable(null, "M4", 8, "Main Hall", 386, 30, 96, 64, "rectangle", Set.of()));
         tableRepository.save(new RestaurantTable(null, "M5", 6, "Main Hall", 402, 128, 80, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M6", 4, "Main Hall", 418, 226, 64, 64, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA)));
-        tableRepository.save(new RestaurantTable(null, "M7", 2, "Main Hall", 310, 314, 48, 48, "round", Set.of(TableFeature.NEAR_PLAY_AREA)));
+        tableRepository.save(new RestaurantTable(null, "M6", 4, "Main Hall", 418, 226, 64, 64, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA, TableFeature.ACCESSIBLE)));
+        tableRepository.save(new RestaurantTable(null, "M7", 2, "Main Hall", 310, 314, 48, 48, "round", Set.of(TableFeature.NEAR_PLAY_AREA, TableFeature.ACCESSIBLE)));
 
         // Private zone (top-right)
         tableRepository.save(new RestaurantTable(null, "P1", 2, "Private", 624, 30, 48, 48, "rectangle", Set.of(TableFeature.PRIVATE)));
@@ -54,8 +54,8 @@ public class DataInitializer implements CommandLineRunner {
 
         // Terrace zone (bottom)
         tableRepository.save(new RestaurantTable(null, "T1", 4, "Terrace", 118, 486, 64, 48, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "T2", 4, "Terrace", 265, 486, 64, 48, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "T3", 6, "Terrace", 412, 486, 80, 48, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA)));
+        tableRepository.save(new RestaurantTable(null, "T2", 4, "Terrace", 265, 486, 64, 48, "rectangle", Set.of(TableFeature.ACCESSIBLE)));
+        tableRepository.save(new RestaurantTable(null, "T3", 6, "Terrace", 412, 486, 80, 48, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA, TableFeature.ACCESSIBLE)));
         tableRepository.save(new RestaurantTable(null, "T4", 2, "Terrace", 575, 486, 48, 48, "round", Set.of(TableFeature.NEAR_PLAY_AREA)));
     }
 
