@@ -44,17 +44,17 @@ public class DataInitializer implements CommandLineRunner {
         tableRepository.save(new RestaurantTable(null, "M3", 4, "Main Hall", 185, 226, 64, 64, "rectangle", Set.of()));
         tableRepository.save(new RestaurantTable(null, "M4", 8, "Main Hall", 386, 30, 96, 64, "rectangle", Set.of()));
         tableRepository.save(new RestaurantTable(null, "M5", 6, "Main Hall", 402, 128, 80, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M6", 4, "Main Hall", 418, 226, 64, 64, "rectangle", Set.of()));
-        tableRepository.save(new RestaurantTable(null, "M7", 2, "Main Hall", 310, 314, 48, 48, "round", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "M6", 4, "Main Hall", 418, 226, 64, 64, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA)));
+        tableRepository.save(new RestaurantTable(null, "M7", 2, "Main Hall", 310, 314, 48, 48, "round", Set.of(TableFeature.NEAR_PLAY_AREA)));
 
         // Private zone (top-right)
         tableRepository.save(new RestaurantTable(null, "P1", 2, "Private", 624, 30, 48, 48, "rectangle", Set.of(TableFeature.PRIVATE)));
         tableRepository.save(new RestaurantTable(null, "P2", 2, "Private", 624, 128, 48, 48, "rectangle", Set.of(TableFeature.PRIVATE)));
-        tableRepository.save(new RestaurantTable(null, "P3", 8, "Private", 576, 226, 96, 64, "rectangle", Set.of(TableFeature.PRIVATE)));
+        tableRepository.save(new RestaurantTable(null, "P3", 8, "Private", 576, 226, 96, 64, "rectangle", Set.of(TableFeature.PRIVATE, TableFeature.NEAR_PLAY_AREA)));
 
         // Terrace zone (bottom)
-        tableRepository.save(new RestaurantTable(null, "T1", 4, "Terrace", 118, 486, 64, 48, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA)));
-        tableRepository.save(new RestaurantTable(null, "T2", 4, "Terrace", 265, 486, 64, 48, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA)));
+        tableRepository.save(new RestaurantTable(null, "T1", 4, "Terrace", 118, 486, 64, 48, "rectangle", Set.of()));
+        tableRepository.save(new RestaurantTable(null, "T2", 4, "Terrace", 265, 486, 64, 48, "rectangle", Set.of()));
         tableRepository.save(new RestaurantTable(null, "T3", 6, "Terrace", 412, 486, 80, 48, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA)));
         tableRepository.save(new RestaurantTable(null, "T4", 2, "Terrace", 575, 486, 48, 48, "round", Set.of(TableFeature.NEAR_PLAY_AREA)));
     }

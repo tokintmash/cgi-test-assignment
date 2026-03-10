@@ -94,6 +94,9 @@ export function FloorPlan({
             <text x={185} y={15} className="zone-label">
               Main Hall
             </text>
+            <text x={500} y={370} className="zone-label" textAnchor="middle">
+              PLAY AREA
+            </text>
           </g>
           <g className="zone zone-private">
             <rect x={510} y={-10} width={180} height={320} rx={18} />
