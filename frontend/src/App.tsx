@@ -95,7 +95,7 @@ function App() {
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
-  const zones = useMemo(() => Array.from(new Set(tables.map((table) => table.zone))).sort(), [tables])
+  const zones = useMemo(() => Array.from(new Set(tables.map((table) => table.zone))).filter((zone) => zone !== 'Window').sort(), [tables])
 
   const recommendedIds = useMemo(
     () => new Set(recommendations.map((recommendation) => recommendation.tableId)),

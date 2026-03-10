@@ -148,7 +148,7 @@ class RecommendationServiceTest {
     @Test
     void multipleTablesRankedByScore() {
         var perfectTable = createTable(1L, "W1", 4, "Window", Set.of(TableFeature.WINDOW));
-        var okTable = createTable(2L, "M1", 6, "Main Hall", Set.of(TableFeature.WINDOW));
+        var okTable = createTable(2L, "W2", 6, "Window", Set.of(TableFeature.WINDOW));
         var request = new SearchRequest(DATE, TIME, 4, 120, "Window", Set.of(TableFeature.WINDOW));
 
         when(tableRepository.findAll()).thenReturn(List.of(okTable, perfectTable));
