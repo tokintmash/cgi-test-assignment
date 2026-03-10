@@ -44,6 +44,7 @@ public class RecommendationService {
         var recommendations = allTables.stream()
                 .filter(table -> table.getCapacity() >= request.partySize())
                 .filter(table -> isAvailable(table, request, endTime, reservationsOnDate))
+                .filter(table -> hasAllPreferences(table, request.preferences()))
                 .map(table -> toRecommendation(table, request))
                 .sorted(Comparator.comparingDouble(TableRecommendation::score).reversed())
                 .toList();
@@ -115,6 +116,13 @@ public class RecommendationService {
                 .filter(tableFeatures::contains)
                 .count();
         return (double) matched / preferences.size();
+    }
+
+    private boolean hasAllPreferences(RestaurantTable table, Set<TableFeature> preferences) {
+        if (preferences == null || preferences.isEmpty()) {
+            return true;
+        }
+        return table.getFeatures().containsAll(preferences);
     }
 
     private double calculateZoneMatch(String tableZone, String requestedZone) {

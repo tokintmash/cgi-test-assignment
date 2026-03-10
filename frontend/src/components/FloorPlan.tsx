@@ -117,15 +117,17 @@ export function FloorPlan({
           {/* Walls */}
           <g className="walls">
             {/* Vertical wall between Main Hall and Private */}
-            <line x1={503} y1={-10} x2={503} y2={310} stroke="white" strokeWidth={2} />
+            <line x1={500} y1={-10} x2={500} y2={310} stroke="white" strokeWidth={3} />
             {/* Horizontal walls separating Private tables */}
-            <line x1={576} y1={103} x2={690} y2={103} stroke="white" strokeWidth={2} />
-            <line x1={576} y1={201} x2={690} y2={201} stroke="white" strokeWidth={2} />
-            <line x1={576} y1={310} x2={690} y2={310} stroke="white" strokeWidth={2} />
+            <line x1={576} y1={103} x2={700} y2={103} stroke="white" strokeWidth={3} />
+            <line x1={576} y1={201} x2={700} y2={201} stroke="white" strokeWidth={3} />
+            <line x1={576} y1={310} x2={700} y2={310} stroke="white" strokeWidth={3} />
+            {/* Window (top wall, glass) HUMAN */}
+            <line x1={250} y1={-20} x2={400} y2={-20} stroke="#7EC8E3" strokeWidth={3} />
             {/* Window (left wall, glass) */}
-            <line x1={10} y1={10} x2={10} y2={290} stroke="#7EC8E3" strokeWidth={3} />
+            <line x1={2} y1={10} x2={2} y2={290} stroke="#7EC8E3" strokeWidth={3} />
             {/* Entrance (gap between Window and Terrace zones) */}
-            <line x1={10} y1={330} x2={10} y2={430} stroke="#D4915E" strokeWidth={3} />
+            <line x1={2} y1={330} x2={2} y2={430} stroke="#D4915E" strokeWidth={3} />
           </g>
 
           {tables.map((table) => {

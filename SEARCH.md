@@ -1,0 +1,6 @@
+- W1 gets recommended in top 5 when searching for Accessible and Near play area, 2 people
+- WHen searching for private tables, there should not be any other zones recommended
+- When searching for Window, only tables that have the window tag, should be recommended
+- Add the window tag to M1 and M4 as well
+- T3 has 6 seats. Change the size equal to M2 and M5
+- Only tables that have the required preferences should get recommended. If there are no matches, there should be no recommandations. The right pane should show "No matches :("

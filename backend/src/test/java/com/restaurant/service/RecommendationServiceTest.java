@@ -64,7 +64,7 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void partialMatch_scoresLower() {
+    void partialMatch_isExcluded() {
         var table = createTable(1L, "M1", 6, "Main Hall", Set.of(TableFeature.ACCESSIBLE));
         var request = new SearchRequest(DATE, TIME, 4, 120, "Window", Set.of(TableFeature.WINDOW, TableFeature.ACCESSIBLE));
 
@@ -73,15 +73,7 @@ class RecommendationServiceTest {
 
         var response = service.search(request);
 
-        assertEquals(1, response.recommendations().size());
-        var rec = response.recommendations().get(0);
-        // efficiency: 1.0 - (6-4)/6 = 0.667
-        assertEquals(0.667, rec.scoreBreakdown().efficiency(), 0.001);
-        // preference: 1/2 = 0.5 (only ACCESSIBLE matches)
-        assertEquals(0.5, rec.scoreBreakdown().preferenceMatch());
-        // zone: 0.5 (Main Hall != Window)
-        assertEquals(0.5, rec.scoreBreakdown().zoneMatch());
-        assertTrue(rec.score() < 0.91);
+        assertTrue(response.recommendations().isEmpty());
     }
 
     @Test
@@ -156,7 +148,7 @@ class RecommendationServiceTest {
     @Test
     void multipleTablesRankedByScore() {
         var perfectTable = createTable(1L, "W1", 4, "Window", Set.of(TableFeature.WINDOW));
-        var okTable = createTable(2L, "M1", 6, "Main Hall", Set.of());
+        var okTable = createTable(2L, "M1", 6, "Main Hall", Set.of(TableFeature.WINDOW));
         var request = new SearchRequest(DATE, TIME, 4, 120, "Window", Set.of(TableFeature.WINDOW));
 
         when(tableRepository.findAll()).thenReturn(List.of(okTable, perfectTable));

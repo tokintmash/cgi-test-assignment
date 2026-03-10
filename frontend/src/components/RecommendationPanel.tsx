@@ -26,7 +26,7 @@ export function RecommendationPanel({
       {isLoading && <p className="panel-state">Calculating best tables...</p>}
 
       {hasSearched && !isLoading && recommendations.length === 0 && (
-        <p className="panel-state">No available tables match this party size and time slot.</p>
+        <p className="panel-state">No matches :(</p>
       )}
 
       {hasSearched && !isLoading && recommendations.length > 0 && (
