@@ -1,22 +1,31 @@
-import type { TableRecommendation } from '../types'
+import type { TableRecommendation, TableCombination } from '../types'
+import { featureLabel } from '../utils/featureLabels'
 import '../styles/RecommendationPanel.css'
 
 interface RecommendationPanelProps {
   recommendations: TableRecommendation[]
+  combinations: TableCombination[]
   isLoading: boolean
   hasSearched: boolean
   selectedTableId: number | null
+  selectedCombination: TableCombination | null
   onSelect: (tableId: number) => void
   onBook: (tableId: number) => void
+  onBookCombination: (combination: TableCombination) => void
+  onSelectCombination: (combination: TableCombination | null) => void
 }
 
 export function RecommendationPanel({
   recommendations,
+  combinations,
   isLoading,
   hasSearched,
   selectedTableId,
+  selectedCombination,
   onSelect,
   onBook,
+  onBookCombination,
+  onSelectCombination,
 }: RecommendationPanelProps) {
   return (
     <section className="card-panel recommendation-panel" aria-label="Recommended tables">
@@ -55,6 +64,37 @@ export function RecommendationPanel({
             )
           })}
         </ol>
+      )}
+
+      {hasSearched && !isLoading && combinations.length > 0 && (
+        <div className="combinations-section">
+          <h3 className="combinations-title">Combined tables</h3>
+          <p className="combinations-subtitle">For larger parties, these adjacent tables can be joined</p>
+          <ol className="recommendation-list">
+            {combinations.map((combo) => {
+              const isSelected = selectedCombination?.tableId1 === combo.tableId1 && selectedCombination?.tableId2 === combo.tableId2
+              return (
+                <li key={`${combo.tableId1}-${combo.tableId2}`} className={isSelected ? 'recommendation-item combination-item selected' : 'recommendation-item combination-item'}>
+                  <button
+                    type="button"
+                    className="recommendation-summary"
+                    onClick={() => onSelectCombination(isSelected ? null : combo)}
+                  >
+                    <div>
+                      <h3>{combo.tableName1} + {combo.tableName2}</h3>
+                      <p className="recommendation-meta">
+                        {combo.zone} · Combined seats: {combo.combinedCapacity}
+                      </p>
+                    </div>
+                  </button>
+                  <button type="button" className="secondary-button" onClick={() => onBookCombination(combo)}>
+                    Book combined tables
+                  </button>
+                </li>
+              )
+            })}
+          </ol>
+        </div>
       )}
     </section>
   )

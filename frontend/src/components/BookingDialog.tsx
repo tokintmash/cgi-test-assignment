@@ -1,11 +1,12 @@
 import { useState, type FormEvent } from 'react'
-import type { RestaurantTable, SearchRequest } from '../types'
+import type { RestaurantTable, SearchRequest, TableCombination } from '../types'
 import { featureLabel } from '../utils/featureLabels'
 import '../styles/BookingDialog.css'
 
 interface BookingDialogProps {
   isOpen: boolean
   table: RestaurantTable | null
+  combination: TableCombination | null
   criteria: SearchRequest
   isSubmitting: boolean
   errorMessage: string | null
@@ -16,6 +17,7 @@ interface BookingDialogProps {
 export function BookingDialog({
   isOpen,
   table,
+  combination,
   criteria,
   isSubmitting,
   errorMessage,
@@ -25,7 +27,7 @@ export function BookingDialog({
   const [guestName, setGuestName] = useState('')
   const [duration, setDuration] = useState(criteria.duration)
 
-  if (!isOpen || !table) {
+  if (!isOpen || (!table && !combination)) {
     return null
   }
 
@@ -43,21 +45,39 @@ export function BookingDialog({
         className="booking-dialog"
         role="dialog"
         aria-modal="true"
-        aria-label={`Book ${table.name}`}
+        aria-label={combination ? `Book ${combination.tableName1} + ${combination.tableName2}` : `Book ${table?.name}`}
         onClick={(event) => event.stopPropagation()}
       >
         <h2>Confirm booking</h2>
-        <p>
-          {table.name} in {table.zone} · Capacity {table.capacity}
-        </p>
-        <p>
-          {criteria.date} at {criteria.startTime} · Party of {criteria.partySize}
-        </p>
-        <p className="dialog-features">
-          {table.features.length > 0
-            ? table.features.map((feature) => featureLabel(feature)).join(' • ')
-            : 'No special features'}
-        </p>
+        {combination ? (
+          <>
+            <p>
+              {combination.tableName1} + {combination.tableName2} in {combination.zone} · Combined capacity {combination.combinedCapacity}
+            </p>
+            <p>
+              {criteria.date} at {criteria.startTime} · Party of {criteria.partySize}
+            </p>
+            <p className="dialog-features">
+              {combination.combinedFeatures.length > 0
+                ? combination.combinedFeatures.map((feature) => featureLabel(feature)).join(' • ')
+                : 'No special features'}
+            </p>
+          </>
+        ) : table ? (
+          <>
+            <p>
+              {table.name} in {table.zone} · Capacity {table.capacity}
+            </p>
+            <p>
+              {criteria.date} at {criteria.startTime} · Party of {criteria.partySize}
+            </p>
+            <p className="dialog-features">
+              {table.features.length > 0
+                ? table.features.map((feature) => featureLabel(feature)).join(' • ')
+                : 'No special features'}
+            </p>
+          </>
+        ) : null}
 
         <form onSubmit={handleSubmit} className="booking-form">
           <label>

@@ -1,4 +1,4 @@
-import type { TableAvailability, RestaurantTable } from '../types'
+import type { TableAvailability, RestaurantTable, TableCombination } from '../types'
 import { TableShape, type TableVisualState } from './TableShape'
 import '../styles/FloorPlan.css'
 
@@ -7,6 +7,7 @@ interface FloorPlanProps {
   statusByTableId: Record<number, TableAvailability>
   recommendedIds: Set<number>
   selectedTableId: number | null
+  selectedCombination: TableCombination | null
   isLoading: boolean
   onSelectTable: (tableId: number) => void
 }
@@ -16,8 +17,13 @@ function toVisualState(
   statusByTableId: Record<number, TableAvailability>,
   recommendedIds: Set<number>,
   selectedTableId: number | null,
+  selectedCombination: TableCombination | null,
 ): TableVisualState {
   if (selectedTableId === tableId) {
+    return 'selected'
+  }
+
+  if (selectedCombination && (selectedCombination.tableId1 === tableId || selectedCombination.tableId2 === tableId)) {
     return 'selected'
   }
 
@@ -57,6 +63,7 @@ export function FloorPlan({
   statusByTableId,
   recommendedIds,
   selectedTableId,
+  selectedCombination,
   isLoading,
   onSelectTable,
 }: FloorPlanProps) {
@@ -131,7 +138,7 @@ export function FloorPlan({
           </g>
 
           {tables.map((table) => {
-            const visualState = toVisualState(table.id, statusByTableId, recommendedIds, selectedTableId)
+            const visualState = toVisualState(table.id, statusByTableId, recommendedIds, selectedTableId, selectedCombination)
             const selectable = statusByTableId[table.id] !== 'reserved' && statusByTableId[table.id] !== undefined
 
             return (
@@ -145,6 +152,7 @@ export function FloorPlan({
               />
             )
           })}
+
         </svg>
       </div>
     </section>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,8 +27,11 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationRequest request) {
         try {
-            Reservation reservation = reservationService.createReservation(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(reservation);
+            List<Reservation> reservations = reservationService.createReservation(request);
+            if (reservations.size() == 1) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(reservations.get(0));
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(reservations);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
         } catch (IllegalArgumentException e) {

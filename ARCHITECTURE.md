@@ -81,7 +81,7 @@ The SVG floor plan includes static architectural features rendered as lines:
 ```
 
 - `zone` is optional. If omitted, all zones are searched.
-- `preferences` is optional. If omitted, only capacity efficiency and zone match are scored.
+- `preferences` is optional. If omitted, all tables pass the preference filter.
 - `duration` is in minutes, defaults to 120 if omitted.
 
 **Response:**
@@ -158,7 +158,10 @@ totalScore = (efficiency × 0.40) + (preferenceMatch × 0.35) + (zoneMatch × 0.
 | Zone match | 1.0 if zone matches or no zone requested, 0.5 otherwise | 15% |
 | Base | Always 0.1 — ensures every valid table gets a nonzero score | 10% |
 
-Tables with `capacity < partySize` are excluded from results entirely.
+Tables are excluded from results if:
+- `capacity < partySize`
+- The table does not have **all** requested preferences
+- A zone is selected and the table is not in that zone
 
 ## Technology Choice Rationale
 

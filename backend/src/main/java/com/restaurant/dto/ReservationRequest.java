@@ -7,9 +7,11 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public record ReservationRequest(
-        @NotNull Long tableId,
+        Long tableId,
+        List<Long> tableIds,
         @NotNull @FutureOrPresent LocalDate date,
         @NotNull LocalTime startTime,
         @Min(30) int duration,
@@ -20,5 +22,15 @@ public record ReservationRequest(
         if (duration == 0) {
             duration = 120;
         }
+    }
+
+    public List<Long> resolvedTableIds() {
+        if (tableIds != null && !tableIds.isEmpty()) {
+            return tableIds;
+        }
+        if (tableId != null) {
+            return List.of(tableId);
+        }
+        return List.of();
     }
 }

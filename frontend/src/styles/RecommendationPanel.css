@@ -59,3 +59,30 @@
 .recommendation-item .secondary-button {
   width: 100%;
 }
+
+.combinations-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-soft);
+}
+
+.combinations-title {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+}
+
+.combinations-subtitle {
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+}
+
+.combination-item {
+  border-style: dashed;
+}
+
+.combination-item.selected {
+  border-color: var(--color-selected);
+  border-style: solid;
+}

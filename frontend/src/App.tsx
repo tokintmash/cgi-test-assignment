@@ -9,6 +9,7 @@ import type {
   TableAvailability,
   TableStatus,
   TableRecommendation,
+  TableCombination,
   RestaurantTable,
 } from './types'
 import './styles/app.css'
@@ -85,6 +86,8 @@ function App() {
   const [autoSearchAttempted, setAutoSearchAttempted] = useState(false)
 
   const [recommendations, setRecommendations] = useState<TableRecommendation[]>([])
+  const [combinations, setCombinations] = useState<TableCombination[]>([])
+  const [selectedCombination, setSelectedCombination] = useState<TableCombination | null>(null)
   const [statusByTableId, setStatusByTableId] = useState<Record<number, TableAvailability>>({})
 
   const [selectedTableId, setSelectedTableId] = useState<number | null>(null)
@@ -166,6 +169,7 @@ function App() {
     try {
       const response = await reservationApi.searchTables(criteria)
       setRecommendations(response.recommendations.slice(0, 5))
+      setCombinations(response.combinations ?? [])
       setStatusByTableId(toStatusMap(response.allTables))
       setHasSearched(true)
 
@@ -195,15 +199,25 @@ function App() {
   const handleSearchSubmit = (criteria: SearchRequest) => {
     setSearchRequest(criteria)
     setSelectedTableId(null)
+    setSelectedCombination(null)
     setBookingOpen(false)
     setBookingError(null)
     void runSearch(criteria)
+  }
+
+  const openCombinationBooking = (combination: TableCombination) => {
+    setSelectedCombination(combination)
+    setSelectedTableId(null)
+    setBookingSession((current) => current + 1)
+    setBookingError(null)
+    setBookingOpen(true)
   }
 
   const openBooking = (tableId: number) => {
     if (statusByTableId[tableId] !== 'available') {
       return
     }
+    setSelectedCombination(null)
     setBookingSession((current) => current + 1)
     setSelectedTableId(tableId)
     setBookingError(null)
@@ -213,10 +227,11 @@ function App() {
   const closeBooking = () => {
     setBookingOpen(false)
     setBookingError(null)
+    setSelectedCombination(null)
   }
 
   const handleBookingConfirm = async (payload: { guestName: string; duration: number }) => {
-    if (selectedTableId === null) {
+    if (selectedTableId === null && selectedCombination === null) {
       return
     }
 
@@ -229,18 +244,31 @@ function App() {
     setBookingError(null)
 
     try {
-      await reservationApi.createReservation({
-        tableId: selectedTableId,
+      const baseRequest = {
         date: searchRequest.date,
         startTime: searchRequest.startTime,
         duration: payload.duration,
         partySize: searchRequest.partySize,
         guestName: payload.guestName.trim(),
-      })
+      }
 
-      setSuccessMessage(`Reservation confirmed for ${payload.guestName.trim()}.`)
+      if (selectedCombination) {
+        await reservationApi.createReservation({
+          ...baseRequest,
+          tableIds: [selectedCombination.tableId1, selectedCombination.tableId2],
+        })
+        setSuccessMessage(`Reservation confirmed for ${payload.guestName.trim()} (${selectedCombination.tableName1} + ${selectedCombination.tableName2}).`)
+      } else {
+        await reservationApi.createReservation({
+          ...baseRequest,
+          tableId: selectedTableId!,
+        })
+        setSuccessMessage(`Reservation confirmed for ${payload.guestName.trim()}.`)
+      }
+
       setBookingOpen(false)
       setSelectedTableId(null)
+      setSelectedCombination(null)
       await runSearch(searchRequest)
     } catch (error: unknown) {
       setBookingError(errorMessage(error, 'Unable to create reservation.'))
@@ -276,6 +304,7 @@ function App() {
             statusByTableId={statusByTableId}
             recommendedIds={recommendedIds}
             selectedTableId={selectedTableId}
+            selectedCombination={selectedCombination}
             isLoading={searchLoading || tablesLoading}
             onSelectTable={openBooking}
           />
@@ -284,11 +313,15 @@ function App() {
         <div className="right-column">
           <RecommendationPanel
             recommendations={recommendations}
+            combinations={combinations}
             isLoading={searchLoading}
             hasSearched={hasSearched}
             selectedTableId={selectedTableId}
+            selectedCombination={selectedCombination}
             onSelect={setSelectedTableId}
             onBook={openBooking}
+            onBookCombination={openCombinationBooking}
+            onSelectCombination={setSelectedCombination}
           />
         </div>
       </main>
@@ -297,6 +330,7 @@ function App() {
         key={bookingSession}
         isOpen={bookingOpen}
         table={selectedTable}
+        combination={selectedCombination}
         criteria={searchRequest}
         isSubmitting={bookingLoading}
         errorMessage={bookingError}

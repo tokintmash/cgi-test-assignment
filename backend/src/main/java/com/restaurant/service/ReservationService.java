@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,29 +29,35 @@ public class ReservationService {
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public Reservation createReservation(ReservationRequest request) {
-        var table = tableRepository.findById(request.tableId())
-                .orElseThrow(() -> new IllegalArgumentException("Table not found: " + request.tableId()));
-
-        var endTime = request.startTime().plusMinutes(request.duration());
-
-        var overlaps = reservationRepository.findOverlapping(
-                request.tableId(), request.date(), request.startTime(), endTime);
-
-        if (!overlaps.isEmpty()) {
-            throw new IllegalStateException("Table is already reserved for this time slot");
+    public List<Reservation> createReservation(ReservationRequest request) {
+        var ids = request.resolvedTableIds();
+        if (ids.isEmpty()) {
+            throw new IllegalArgumentException("At least one table ID is required");
         }
 
-        var reservation = new Reservation(
-                request.tableId(),
-                request.date(),
-                request.startTime(),
-                endTime,
-                request.partySize(),
-                request.guestName()
-        );
+        var endTime = request.startTime().plusMinutes(request.duration());
+        var reservations = new ArrayList<Reservation>();
 
-        return reservationRepository.save(reservation);
+        for (Long id : ids) {
+            tableRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Table not found: " + id));
+
+            var overlaps = reservationRepository.findOverlapping(id, request.date(), request.startTime(), endTime);
+            if (!overlaps.isEmpty()) {
+                throw new IllegalStateException("Table is already reserved for this time slot");
+            }
+
+            reservations.add(new Reservation(
+                    id,
+                    request.date(),
+                    request.startTime(),
+                    endTime,
+                    request.partySize(),
+                    request.guestName()
+            ));
+        }
+
+        return reservationRepository.saveAll(reservations);
     }
 
     public List<Reservation> getReservationsByDate(LocalDate date) {

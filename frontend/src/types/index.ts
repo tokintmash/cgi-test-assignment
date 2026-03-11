@@ -37,6 +37,28 @@ export interface TableRecommendation {
   shape: string
 }
 
+export interface TableCombination {
+  tableId1: number
+  tableName1: string
+  posX1: number
+  posY1: number
+  width1: number
+  height1: number
+  shape1: string
+  tableId2: number
+  tableName2: string
+  posX2: number
+  posY2: number
+  width2: number
+  height2: number
+  shape2: string
+  zone: string
+  combinedCapacity: number
+  combinedFeatures: TableFeature[]
+  score: number
+  scoreBreakdown: ScoreBreakdown
+}
+
 export interface TableStatus {
   tableId: number
   tableName: string
@@ -57,11 +79,13 @@ export interface SearchRequest {
 
 export interface SearchResponse {
   recommendations: TableRecommendation[]
+  combinations: TableCombination[]
   allTables: TableStatus[]
 }
 
 export interface ReservationRequest {
-  tableId: number
+  tableId?: number
+  tableIds?: number[]
   date: string
   startTime: string
   duration: number
