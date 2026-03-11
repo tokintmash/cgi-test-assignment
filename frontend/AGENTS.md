@@ -2,7 +2,7 @@
 
 ## Stack
 
-- React 18, TypeScript (strict mode), Vite
+- React 19, TypeScript (strict mode), Vite
 - No component libraries (no MUI, no Ant Design)
 - No state libraries (no Redux, no Zustand) — use `useState` / `useReducer`
 - No axios — use `fetch` wrapper
@@ -47,7 +47,9 @@ Development: `http://localhost:8080`
 
 - Floor plan tables are positioned using `posX`, `posY`, `width`, `height` from the API
 - Tables are colored by status: available (green), reserved (red), recommended (gold), selected (blue)
-- Recommended tables show score breakdown (efficiency, preference match, zone match)
+- Recommendation cards may stay compact and omit score breakdown even when the API includes it
 - Clicking a recommended/available table opens a booking confirmation
 - Reserved tables are visually distinct and not clickable
 - Show loading, error, and empty states for all API calls
+- Rendering all table shapes uniformly is acceptable unless the user explicitly asks for shape-specific SVG output
+- Hover tooltips and stronger recommended/selected visual emphasis are optional polish, not default review findings

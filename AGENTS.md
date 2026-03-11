@@ -5,7 +5,7 @@
 Smart restaurant reservation system with an interactive SVG floor plan and recommendation engine.
 
 - **Backend:** Spring Boot 3.x, Java 21, Maven, H2 in-memory database
-- **Frontend:** React 18, TypeScript, Vite, plain CSS
+- **Frontend:** React 19, TypeScript, Vite, plain CSS
 - **Floor plan:** Raw SVG (no external libraries)
 
 ## Repository Structure
@@ -30,7 +30,7 @@ docs/             Screenshots and supplementary documentation
 
 ### TypeScript (Frontend)
 
-- React 18 with functional components and hooks only (no class components)
+- React 19 with functional components and hooks only (no class components)
 - TypeScript strict mode
 - State management: `useState` / `useReducer` only (no external state libraries)
 - API calls: `fetch` wrapper (no axios)
@@ -105,6 +105,14 @@ docs/             Screenshots and supplementary documentation
 **`AI-USAGE.md` must be updated whenever there is something meaningful to add.** After completing a phase, implementing a significant feature, or making an AI-assisted decision, append a row to the Change Log table in `AI-USAGE.md` with what AI did and what the human did. Do not batch documentation to the end — log as you go.
 
 **`PROBLEMS.md` must be updated whenever an issue is encountered and resolved.** When debugging a bug, fixing a build failure, resolving a dependency conflict, or working around a limitation, append a row to the table in `PROBLEMS.md` with the problem, its cause, the solution, and today's date.
+
+## UI Review Baseline
+
+- The current accepted recommendation card layout may omit score breakdown even when score data is returned by the API.
+- The current accepted floor plan may render tables with a uniform visual shape instead of matching the backend `shape` field.
+- Hover tooltips and stronger visual differentiation for recommended vs selected tables are deferred polish items unless the user explicitly requests them.
+- The current feature assignments per table are intentional: `NEAR_PLAY_AREA` is on M6, M7, P3, T3, T4 (not on T1/T2); `ACCESSIBLE` is on W4, M3, M6, M7, T2, T3 (not on W3). Do not flag these as inconsistencies with zone names.
+- The Main Hall zone rect is intentionally fully transparent. The "PLAY AREA" label inside it is a visual annotation, not a separate zone entity.
 
 ## Code Attribution
 
