@@ -97,6 +97,7 @@ function App() {
   const [bookingError, setBookingError] = useState<string | null>(null)
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [resetting, setResetting] = useState(false)
 
   const zones = useMemo(() => Array.from(new Set(tables.map((table) => table.zone))).filter((zone) => zone !== 'Window').sort(), [tables])
 
@@ -224,6 +225,22 @@ function App() {
     setBookingOpen(true)
   }
 
+  const handleReset = async () => {
+    setResetting(true)
+    try {
+      await reservationApi.resetReservations()
+      setSuccessMessage('Reservations have been reset.')
+      setSelectedTableId(null)
+      setSelectedCombination(null)
+      setBookingOpen(false)
+      await runSearch(searchRequest)
+    } catch (error: unknown) {
+      setSearchError(errorMessage(error, 'Failed to reset reservations.'))
+    } finally {
+      setResetting(false)
+    }
+  }
+
   const closeBooking = () => {
     setBookingOpen(false)
     setBookingError(null)
@@ -280,8 +297,19 @@ function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <p className="eyebrow">Smart reservation</p>
-        <h1>Restaurant table recommender</h1>
+        <div className="header-top-row">
+          <div>
+            <p className="eyebrow">Smart reservation</p>
+            <h1>Restaurant table recommender</h1>
+          </div>
+          <button
+            className="btn-reset"
+            disabled={resetting}
+            onClick={() => void handleReset()}
+          >
+            {resetting ? 'Resetting…' : 'Reset reservations'}
+          </button>
+        </div>
         <p>Search by party, time, and preferences, then click a table on the map or in the ranking to book.</p>
       </header>
 
