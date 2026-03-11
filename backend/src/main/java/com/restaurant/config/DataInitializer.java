@@ -55,7 +55,7 @@ public class DataInitializer implements CommandLineRunner {
         // Terrace zone (bottom)
         tableRepository.save(new RestaurantTable(null, "T1", 4, "Terrace", 118, 486, 64, 48, "rectangle", Set.of()));
         tableRepository.save(new RestaurantTable(null, "T2", 4, "Terrace", 265, 486, 64, 48, "rectangle", Set.of(TableFeature.ACCESSIBLE)));
-        tableRepository.save(new RestaurantTable(null, "T3", 6, "Terrace", 412, 486, 80, 64, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA, TableFeature.ACCESSIBLE)));
+        tableRepository.save(new RestaurantTable(null, "T3", 6, "Terrace", 412, 470, 80, 64, "rectangle", Set.of(TableFeature.NEAR_PLAY_AREA, TableFeature.ACCESSIBLE)));
         tableRepository.save(new RestaurantTable(null, "T4", 2, "Terrace", 575, 486, 48, 48, "round", Set.of(TableFeature.NEAR_PLAY_AREA)));
     }
 

@@ -18,6 +18,7 @@ interface TooltipInfo {
   tableId: number
   x: number
   y: number
+  flipDown: boolean
 }
 
 function toVisualState(
@@ -87,19 +88,29 @@ export function FloorPlan({
     const table = tableById.get(tableId)
     if (!table || !svgRef.current) return
     const svg = svgRef.current
-    const point = svg.createSVGPoint()
-    point.x = table.posX + table.width / 2
-    point.y = table.posY
     const ctm = svg.getScreenCTM()
     if (!ctm) return
-    const screenPoint = point.matrixTransform(ctm)
     const wrapper = svg.parentElement
     if (!wrapper) return
-    const rect = wrapper.getBoundingClientRect()
+    const wrapperRect = wrapper.getBoundingClientRect()
+
+    const topPoint = svg.createSVGPoint()
+    topPoint.x = table.posX + table.width / 2
+    topPoint.y = table.posY
+    const screenTop = topPoint.matrixTransform(ctm)
+    const relY = screenTop.y - wrapperRect.top
+    const flipDown = relY < 70
+
+    const anchorPoint = svg.createSVGPoint()
+    anchorPoint.x = table.posX + table.width / 2
+    anchorPoint.y = flipDown ? table.posY + table.height : table.posY
+    const screenAnchor = anchorPoint.matrixTransform(ctm)
+
     setTooltip({
       tableId,
-      x: screenPoint.x - rect.left,
-      y: screenPoint.y - rect.top,
+      x: screenAnchor.x - wrapperRect.left,
+      y: screenAnchor.y - wrapperRect.top,
+      flipDown,
     })
   }
 
@@ -132,7 +143,7 @@ export function FloorPlan({
 
       <div className="svg-wrapper" role="img" aria-label="Restaurant floor plan with table availability">
         {isLoading && <div className="plan-overlay">Refreshing availability...</div>}
-        <svg ref={svgRef} viewBox="0 0 700 540" className="floor-svg" preserveAspectRatio="xMidYMid meet">
+        <svg ref={svgRef} viewBox="0 -25 700 585" className="floor-svg" preserveAspectRatio="xMidYMid meet">
           <g className="zone zone-window">
             <rect x={10} y={-10} width={145} height={320} rx={18} />
             <text x={30} y={15} className="zone-label">
@@ -202,7 +213,7 @@ export function FloorPlan({
 
         {tooltip && tooltipTable && tooltipState && (
           <div
-            className="table-tooltip"
+            className={`table-tooltip${tooltip.flipDown ? ' tooltip-below' : ''}`}
             style={{ left: tooltip.x, top: tooltip.y }}
           >
             <strong>{tooltipTable.name}</strong>

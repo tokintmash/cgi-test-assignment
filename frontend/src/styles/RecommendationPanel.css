@@ -77,12 +77,6 @@
   color: var(--color-text-primary);
 }
 
-.combinations-subtitle {
-  margin: 0 0 12px;
-  font-size: 0.82rem;
-  color: var(--color-text-secondary);
-}
-
 .combination-item {
   border-style: dashed;
 }

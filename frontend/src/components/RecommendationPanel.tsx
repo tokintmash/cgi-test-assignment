@@ -34,7 +34,7 @@ export function RecommendationPanel({
       {!hasSearched && <p className="panel-state">Submit your search to see ranked suggestions.</p>}
       {isLoading && <p className="panel-state">Calculating best tables...</p>}
 
-      {hasSearched && !isLoading && recommendations.length === 0 && (
+      {hasSearched && !isLoading && recommendations.length === 0 && combinations.length === 0 && (
         <p className="panel-state">No matches :(</p>
       )}
 
@@ -69,7 +69,6 @@ export function RecommendationPanel({
       {hasSearched && !isLoading && combinations.length > 0 && (
         <div className="combinations-section">
           <h3 className="combinations-title">Combined tables</h3>
-          <p className="combinations-subtitle">For larger parties, these adjacent tables can be joined</p>
           <ol className="recommendation-list">
             {combinations.map((combo) => {
               const isSelected = selectedCombination?.tableId1 === combo.tableId1 && selectedCombination?.tableId2 === combo.tableId2
