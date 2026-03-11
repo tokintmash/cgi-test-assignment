@@ -159,7 +159,7 @@
 }
 
 .primary-button:hover {
-  box-shadow: 0 4px 12px rgba(31, 111, 235, 0.3);
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
 }
 
 .primary-button:disabled,

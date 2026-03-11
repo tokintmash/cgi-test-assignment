@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { reservationApi } from './api/reservationApi'
 import { BookingDialog } from './components/BookingDialog'
+import { ConfirmDialog } from './components/ConfirmDialog'
 import { FloorPlan } from './components/FloorPlan'
 import { RecommendationPanel } from './components/RecommendationPanel'
 import { SearchForm } from './components/SearchForm'
@@ -95,9 +96,13 @@ function App() {
   const [bookingSession, setBookingSession] = useState(0)
   const [bookingLoading, setBookingLoading] = useState(false)
   const [bookingError, setBookingError] = useState<string | null>(null)
+  const [bookingSuccess, setBookingSuccess] = useState<string | null>(null)
 
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [resetDialogOpen, setResetDialogOpen] = useState(false)
   const [resetting, setResetting] = useState(false)
+  const [resetResult, setResetResult] = useState<string | null>(null)
+
+  const [visibleRecommendedIds, setVisibleRecommendedIds] = useState<Set<number>>(new Set())
 
   const zones = useMemo(() => Array.from(new Set(tables.map((table) => table.zone))).filter((zone) => zone !== 'Window').sort(), [tables])
 
@@ -117,19 +122,8 @@ function App() {
 
   const selectedTable = selectedTableId !== null ? tableById.get(selectedTableId) ?? null : null
 
-  useEffect(() => {
-    const timeout = successMessage
-      ? window.setTimeout(() => {
-          setSuccessMessage(null)
-        }, 3500)
-      : undefined
-
-    return () => {
-      if (timeout !== undefined) {
-        window.clearTimeout(timeout)
-      }
-    }
-  }, [successMessage])
+  // Floor plan only highlights tables visible in the scrollable recommendation list
+  const floorPlanHighlightIds = visibleRecommendedIds.size > 0 ? visibleRecommendedIds : recommendedIds
 
   useEffect(() => {
     let mounted = true
@@ -169,7 +163,7 @@ function App() {
 
     try {
       const response = await reservationApi.searchTables(criteria)
-      setRecommendations(response.recommendations.slice(0, 5))
+      setRecommendations(response.recommendations)
       setCombinations(response.combinations ?? [])
       setStatusByTableId(toStatusMap(response.allTables))
       setHasSearched(true)
@@ -210,6 +204,7 @@ function App() {
     setSelectedCombination(null)
     setBookingOpen(false)
     setBookingError(null)
+    setBookingSuccess(null)
     void runSearch(criteria)
   }
 
@@ -218,6 +213,7 @@ function App() {
     setSelectedTableId(null)
     setBookingSession((current) => current + 1)
     setBookingError(null)
+    setBookingSuccess(null)
     setBookingOpen(true)
   }
 
@@ -229,28 +225,40 @@ function App() {
     setBookingSession((current) => current + 1)
     setSelectedTableId(tableId)
     setBookingError(null)
+    setBookingSuccess(null)
     setBookingOpen(true)
   }
 
-  const handleReset = async () => {
+  const handleResetClick = () => {
+    setResetResult(null)
+    setResetDialogOpen(true)
+  }
+
+  const handleResetConfirm = async () => {
     setResetting(true)
     try {
       await reservationApi.resetReservations()
-      setSuccessMessage('Reservations have been reset.')
+      setResetResult('Reservations have been reset.')
       setSelectedTableId(null)
       setSelectedCombination(null)
       setBookingOpen(false)
       await runSearch(searchRequest)
     } catch (error: unknown) {
-      setSearchError(errorMessage(error, 'Failed to reset reservations.'))
+      setResetResult(errorMessage(error, 'Failed to reset reservations.'))
     } finally {
       setResetting(false)
     }
   }
 
+  const closeResetDialog = () => {
+    setResetDialogOpen(false)
+    setResetResult(null)
+  }
+
   const closeBooking = () => {
     setBookingOpen(false)
     setBookingError(null)
+    setBookingSuccess(null)
     setSelectedCombination(null)
   }
 
@@ -281,18 +289,15 @@ function App() {
           ...baseRequest,
           tableIds: [selectedCombination.tableId1, selectedCombination.tableId2],
         })
-        setSuccessMessage(`Reservation confirmed for ${payload.guestName.trim()} (${selectedCombination.tableName1} + ${selectedCombination.tableName2}).`)
+        setBookingSuccess(`Reservation confirmed for ${payload.guestName.trim()} (${selectedCombination.tableName1} + ${selectedCombination.tableName2}).`)
       } else {
         await reservationApi.createReservation({
           ...baseRequest,
           tableId: selectedTableId!,
         })
-        setSuccessMessage(`Reservation confirmed for ${payload.guestName.trim()}.`)
+        setBookingSuccess(`Reservation confirmed for ${payload.guestName.trim()}.`)
       }
 
-      setBookingOpen(false)
-      setSelectedTableId(null)
-      setSelectedCombination(null)
       await runSearch(searchRequest)
     } catch (error: unknown) {
       setBookingError(errorMessage(error, 'Unable to create reservation.'))
@@ -312,9 +317,9 @@ function App() {
           <button
             className="btn-reset"
             disabled={resetting}
-            onClick={() => void handleReset()}
+            onClick={handleResetClick}
           >
-            {resetting ? 'Resetting…' : 'Reset reservations'}
+            Reset reservations
           </button>
         </div>
         <p>Search by party, time, and preferences, then click a table on the map or in the ranking to book.</p>
@@ -328,7 +333,6 @@ function App() {
         onSubmit={handleSearchSubmit}
       />
 
-      {successMessage && <p className="status-banner success">{successMessage}</p>}
       {tablesError && <p className="status-banner error">{tablesError}</p>}
       {searchError && <p className="status-banner error">{searchError}</p>}
 
@@ -337,7 +341,7 @@ function App() {
           <FloorPlan
             tables={tables}
             statusByTableId={statusByTableId}
-            recommendedIds={recommendedIds}
+            recommendedIds={floorPlanHighlightIds}
             selectedTableId={selectedTableId}
             selectedCombination={selectedCombination}
             isLoading={searchLoading || tablesLoading}
@@ -357,6 +361,7 @@ function App() {
             onBook={openBooking}
             onBookCombination={openCombinationBooking}
             onSelectCombination={setSelectedCombination}
+            onVisibleIdsChange={setVisibleRecommendedIds}
           />
         </div>
       </main>
@@ -369,8 +374,20 @@ function App() {
         criteria={searchRequest}
         isSubmitting={bookingLoading}
         errorMessage={bookingError}
+        successMessage={bookingSuccess}
         onClose={closeBooking}
         onConfirm={handleBookingConfirm}
+      />
+
+      <ConfirmDialog
+        isOpen={resetDialogOpen}
+        title="Reset reservations"
+        message="This will delete all current reservations and generate new random ones. Continue?"
+        confirmLabel="Yes, reset"
+        isLoading={resetting}
+        result={resetResult}
+        onConfirm={() => void handleResetConfirm()}
+        onClose={closeResetDialog}
       />
     </div>
   )

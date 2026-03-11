@@ -69,6 +69,21 @@
   font-weight: 600;
 }
 
+.dialog-success {
+  margin: 0 0 12px;
+  color: var(--color-success-text);
+  font-weight: 600;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
 .dialog-actions {
   margin-top: 4px;
   display: flex;
