@@ -1,4 +1,6 @@
+import { useMemo, useRef, useState } from 'react'
 import type { TableAvailability, RestaurantTable, TableCombination } from '../types'
+import { featureLabel } from '../utils/featureLabels'
 import { TableShape, type TableVisualState } from './TableShape'
 import '../styles/FloorPlan.css'
 
@@ -10,6 +12,12 @@ interface FloorPlanProps {
   selectedCombination: TableCombination | null
   isLoading: boolean
   onSelectTable: (tableId: number) => void
+}
+
+interface TooltipInfo {
+  tableId: number
+  x: number
+  y: number
 }
 
 function toVisualState(
@@ -67,6 +75,41 @@ export function FloorPlan({
   isLoading,
   onSelectTable,
 }: FloorPlanProps) {
+  const [tooltip, setTooltip] = useState<TooltipInfo | null>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
+
+  const tableById = useMemo(
+    () => new Map(tables.map((t) => [t.id, t])),
+    [tables],
+  )
+
+  const handleMouseEnter = (tableId: number) => {
+    const table = tableById.get(tableId)
+    if (!table || !svgRef.current) return
+    const svg = svgRef.current
+    const point = svg.createSVGPoint()
+    point.x = table.posX + table.width / 2
+    point.y = table.posY
+    const ctm = svg.getScreenCTM()
+    if (!ctm) return
+    const screenPoint = point.matrixTransform(ctm)
+    const wrapper = svg.parentElement
+    if (!wrapper) return
+    const rect = wrapper.getBoundingClientRect()
+    setTooltip({
+      tableId,
+      x: screenPoint.x - rect.left,
+      y: screenPoint.y - rect.top,
+    })
+  }
+
+  const handleMouseLeave = () => setTooltip(null)
+
+  const tooltipTable = tooltip ? tableById.get(tooltip.tableId) : null
+  const tooltipState = tooltipTable
+    ? toVisualState(tooltipTable.id, statusByTableId, recommendedIds, selectedTableId, selectedCombination)
+    : null
+
   return (
     <section className="card-panel floor-plan-panel" aria-label="Interactive floor plan">
       <div className="panel-header-row">
@@ -89,7 +132,7 @@ export function FloorPlan({
 
       <div className="svg-wrapper" role="img" aria-label="Restaurant floor plan with table availability">
         {isLoading && <div className="plan-overlay">Refreshing availability...</div>}
-        <svg viewBox="0 0 700 540" className="floor-svg" preserveAspectRatio="xMidYMid meet">
+        <svg ref={svgRef} viewBox="0 0 700 540" className="floor-svg" preserveAspectRatio="xMidYMid meet">
           <g className="zone zone-window">
             <rect x={10} y={-10} width={145} height={320} rx={18} />
             <text x={30} y={15} className="zone-label">
@@ -149,11 +192,31 @@ export function FloorPlan({
                 selectable={selectable}
                 statusLabel={statusLabelForState(visualState)}
                 onSelect={onSelectTable}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               />
             )
           })}
 
         </svg>
+
+        {tooltip && tooltipTable && tooltipState && (
+          <div
+            className="table-tooltip"
+            style={{ left: tooltip.x, top: tooltip.y }}
+          >
+            <strong>{tooltipTable.name}</strong>
+            <span>{tooltipTable.capacity} seats · {tooltipTable.zone}</span>
+            {tooltipTable.features.length > 0 && (
+              <span className="tooltip-features">
+                {tooltipTable.features.map(featureLabel).join(', ')}
+              </span>
+            )}
+            <span className={`tooltip-status tooltip-status-${tooltipState}`}>
+              {statusLabelForState(tooltipState)}
+            </span>
+          </div>
+        )}
       </div>
     </section>
   )

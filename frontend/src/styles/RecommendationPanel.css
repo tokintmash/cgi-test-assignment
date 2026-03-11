@@ -18,6 +18,11 @@
   display: grid;
   gap: 10px;
   background: var(--color-surface);
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.recommendation-item:hover {
+  background: var(--color-surface-alt);
 }
 
 .recommendation-item.selected {

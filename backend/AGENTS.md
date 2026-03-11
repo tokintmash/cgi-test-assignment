@@ -36,6 +36,8 @@ com.restaurant/
 
 ## Testing
 
-- Unit tests: `RecommendationServiceTest` with 5+ scenarios (JUnit 5 + Mockito)
-- Integration tests: `TableControllerIntegrationTest` with MockMvc
+- Unit tests: `RecommendationServiceTest` — 7 scenarios (JUnit 5 + Mockito)
+- Integration tests: `TableControllerTest` (4) + `ReservationControllerTest` (5) — MockMvc with `@SpringBootTest`
+- Context load: `RestaurantReservationApplicationTests`
 - Run: `./mvnw test`
+- **When tests are added, removed, or renamed, update `/TESTS.md` at the project root.**

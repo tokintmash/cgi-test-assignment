@@ -198,7 +198,14 @@ function App() {
   }, [autoSearchAttempted, searchRequest, tables.length])
 
   const handleSearchSubmit = (criteria: SearchRequest) => {
+    const searchDateTime = new Date(`${criteria.date}T${criteria.startTime}`)
+    if (searchDateTime < new Date()) {
+      setSearchError('Cannot search for past dates and times.')
+      return
+    }
+
     setSearchRequest(criteria)
+    setSearchError(null)
     setSelectedTableId(null)
     setSelectedCombination(null)
     setBookingOpen(false)

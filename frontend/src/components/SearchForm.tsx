@@ -47,6 +47,9 @@ export function SearchForm({ value, zones, isLoading, onChange, onSubmit }: Sear
     onSubmit(value)
   }
 
+  const todayStr = new Date().toISOString().split('T')[0]
+  const isToday = value.date === todayStr
+
   const timeSlots = (() => {
     const slots: string[] = []
     for (let h = 10; h <= 22; h++) {
@@ -55,7 +58,13 @@ export function SearchForm({ value, zones, isLoading, onChange, onSubmit }: Sear
         slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
       }
     }
-    return slots
+    if (!isToday) return slots
+    const now = new Date()
+    const nowMinutes = now.getHours() * 60 + now.getMinutes()
+    return slots.filter((slot) => {
+      const [hh, mm] = slot.split(':').map(Number)
+      return hh * 60 + mm > nowMinutes
+    })
   })()
 
   const durationOptions = [30, 60, 90, 120, 150, 180]
@@ -74,6 +83,7 @@ export function SearchForm({ value, zones, isLoading, onChange, onSubmit }: Sear
               type="date"
               name="date"
               value={value.date}
+              min={todayStr}
               onChange={handleInputChange}
               onClick={handleDateClick}
               required
