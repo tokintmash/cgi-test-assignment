@@ -60,7 +60,19 @@ When a user searches for a table, the system:
    - **Capacity efficiency (35%)** — prefers tables whose size closely matches the party (avoids seating 2 people at an 8-top)
    - **Preference match (30%)** — fraction of requested preferences the table supports
    - **Zone match (10%)** — bonus if the table is in the preferred zone
-   - **Weather penalty (20%)** — penalizes Terrace tables in cold/windy weather (0 at ≥15°C, linear to -1.0 at ≤5°C; at -1.0 terrace is excluded)
+   - **Weather penalty (20%)** — penalizes Terrace tables in cold or windy weather; the harsher of the two sub-penalties applies. At the maximum penalty (-1.0) terrace tables are excluded entirely.
+
+     | Temperature | Penalty |
+     |---|---|
+     | ≥ 15 °C | 0.0 (none) |
+     | 5–15 °C | linear (e.g. 10 °C → -0.5) |
+     | ≤ 5 °C | -1.0 (excluded) |
+
+     | Wind speed | Penalty |
+     |---|---|
+     | ≤ 5.6 m/s | 0.0 (none) |
+     | 5.6–11.1 m/s | linear (e.g. 8.3 m/s → -0.5) |
+     | ≥ 11.1 m/s | -1.0 (excluded) |
    - **Base score (5%)** — ensures all valid tables get a minimum score
 5. Returns the top-ranked tables with a per-factor score breakdown
 
