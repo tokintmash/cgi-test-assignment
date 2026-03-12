@@ -66,7 +66,7 @@ export function BookingDialog({
             {combination ? (
               <>
                 <p>
-                  {combination.tableName1} + {combination.tableName2} in {combination.zone} · Combined capacity {combination.combinedCapacity}
+                  {combination.tableName1} + {combination.tableName2} in {combination.zone} · Combined seats {combination.combinedCapacity}
                 </p>
                 <p>
                   {criteria.date} at {criteria.startTime} · Party of {criteria.partySize}
@@ -80,7 +80,7 @@ export function BookingDialog({
             ) : table ? (
               <>
                 <p>
-                  {table.name} in {table.zone} · Capacity {table.capacity}
+                  {table.name} in {table.zone} · Seats {table.capacity}
                 </p>
                 <p>
                   {criteria.date} at {criteria.startTime} · Party of {criteria.partySize}
