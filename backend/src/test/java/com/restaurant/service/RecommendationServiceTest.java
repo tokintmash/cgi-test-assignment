@@ -95,7 +95,7 @@ class RecommendationServiceTest {
     @Test
     void oversizedTable_getsLowerEfficiency() {
         var small = createTable(1L, "W1", 2, "Window", Set.of());
-        var large = createTable(2L, "M1", 8, "Window", Set.of());
+        var large = createTable(2L, "M1", 4, "Window", Set.of());
         var request = new SearchRequest(DATE, TIME, 2, 120, null, null);
 
         when(tableRepository.findAll()).thenReturn(List.of(small, large));
@@ -109,8 +109,8 @@ class RecommendationServiceTest {
         // small table (capacity=2 for party=2) should rank higher
         assertEquals(1L, first.tableId());
         assertEquals(1.0, first.scoreBreakdown().efficiency());
-        // large table (capacity=8 for party=2): efficiency = 1.0 - 6/8 = 0.25, floored to 0.3
-        assertEquals(0.3, second.scoreBreakdown().efficiency(), 0.001);
+        // large table (capacity=4 for party=2): efficiency = 1.0 - 2/4 = 0.5
+        assertEquals(0.5, second.scoreBreakdown().efficiency(), 0.001);
         assertTrue(first.score() > second.score());
     }
 
@@ -126,6 +126,33 @@ class RecommendationServiceTest {
 
         assertTrue(response.recommendations().isEmpty());
         assertEquals(1, response.allTables().size());
+    }
+
+    @Test
+    void smallParty_excludesOversizedTables() {
+        var cap4 = createTable(1L, "W1", 4, "Window", Set.of());
+        var cap6 = createTable(2L, "M1", 6, "Main Hall", Set.of());
+        var cap8 = createTable(3L, "M2", 8, "Main Hall", Set.of());
+
+        // Party of 2: max capacity = 4
+        var request2 = new SearchRequest(DATE, TIME, 2, 120, null, null);
+        when(tableRepository.findAll()).thenReturn(List.of(cap4, cap6, cap8));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+
+        var response2 = service.search(request2);
+        assertEquals(1, response2.recommendations().size());
+        assertEquals(1L, response2.recommendations().get(0).tableId());
+
+        // Party of 4: max capacity = 6
+        var request4 = new SearchRequest(DATE, TIME, 4, 120, null, null);
+        var response4 = service.search(request4);
+        assertEquals(2, response4.recommendations().size());
+        assertTrue(response4.recommendations().stream().noneMatch(r -> r.tableId() == 3L));
+
+        // Party of 5: no cap
+        var request5 = new SearchRequest(DATE, TIME, 5, 120, null, null);
+        var response5 = service.search(request5);
+        assertEquals(2, response5.recommendations().size());
     }
 
     @Test

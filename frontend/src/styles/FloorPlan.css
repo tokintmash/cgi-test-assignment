@@ -85,10 +85,6 @@
   stroke-dasharray: 4 6;
 }
 
-.zone-main rect {
-  fill: transparent;
-  stroke: transparent;
-}
 
 .zone-label {
   font-size: 13px;
@@ -115,7 +111,7 @@
 
 .table-default rect,
 .table-default circle {
-  fill: #66738c;
+  fill: #4a5568;
 }
 
 .table-available rect,
@@ -134,9 +130,17 @@
   animation: recommended-pulse 1.6s ease-in-out infinite;
 }
 
+.table-hovered rect,
+.table-hovered circle {
+  fill: #93c5fd;
+  transform: scale(1.08);
+  filter: brightness(1.15) drop-shadow(0 0 10px rgba(96, 165, 250, 0.45));
+}
+
 .table-selected rect,
 .table-selected circle {
   fill: var(--color-selected);
+  filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.5));
 }
 
 .table-clickable {
@@ -144,11 +148,16 @@
 }
 
 .table-clickable:hover rect,
-.table-clickable:hover circle,
+.table-clickable:hover circle {
+  fill: #93c5fd;
+  transform: scale(1.04);
+  filter: brightness(1.1) drop-shadow(0 3px 6px rgba(27, 41, 70, 0.23));
+}
+
 .table-clickable:focus rect,
 .table-clickable:focus circle {
   transform: scale(1.04);
-  filter: drop-shadow(0 3px 6px rgba(27, 41, 70, 0.23));
+  filter: brightness(1.1) drop-shadow(0 3px 6px rgba(27, 41, 70, 0.23));
 }
 
 .table-clickable:focus {
@@ -175,6 +184,88 @@
     filter: brightness(1);
   }
   50% {
-    filter: brightness(1.08);
+    filter: brightness(1.12);
   }
+}
+
+.table-tooltip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  margin-top: -10px;
+  z-index: 10;
+  pointer-events: none;
+  background: #1a2538;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.78rem;
+  color: var(--color-text-primary);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  animation: tooltip-in 120ms ease;
+}
+
+.tooltip-below {
+  transform: translate(-50%, 0);
+  margin-top: 10px;
+  animation: tooltip-in-below 120ms ease;
+}
+
+@keyframes tooltip-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -100%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%) translateY(0);
+  }
+}
+
+@keyframes tooltip-in-below {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 0) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) translateY(0);
+  }
+}
+
+.table-tooltip strong {
+  font-size: 0.85rem;
+}
+
+.tooltip-features {
+  color: var(--color-text-accent);
+  font-size: 0.75rem;
+}
+
+.tooltip-status {
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.tooltip-status-available {
+  color: var(--color-available);
+}
+
+.tooltip-status-reserved {
+  color: var(--color-reserved);
+}
+
+.tooltip-status-recommended {
+  color: var(--color-recommended);
+}
+
+.tooltip-status-selected {
+  color: var(--color-selected);
+}
+
+.tooltip-status-default {
+  color: var(--color-text-secondary);
 }

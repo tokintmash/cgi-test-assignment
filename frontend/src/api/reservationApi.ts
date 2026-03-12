@@ -73,6 +73,11 @@ export const reservationApi = {
       body: JSON.stringify(request),
     }),
 
+  cancelReservation: (reservationId: number) =>
+    fetchJson<{ message: string }>(`/api/reservations/${reservationId}`, {
+      method: 'DELETE',
+    }),
+
   resetReservations: () =>
     fetchJson<ResetReservationsResponse>('/api/reservations/reset', {
       method: 'POST',

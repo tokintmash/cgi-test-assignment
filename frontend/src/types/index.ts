@@ -66,6 +66,10 @@ export interface TableStatus {
   capacity: number
   status: TableAvailability
   features: TableFeature[]
+  reservationId: number | null
+  guestName: string | null
+  reservationStart: string | null
+  reservationEnd: string | null
 }
 
 export interface SearchRequest {

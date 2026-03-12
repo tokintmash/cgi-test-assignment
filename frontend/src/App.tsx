@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { reservationApi } from './api/reservationApi'
 import { BookingDialog } from './components/BookingDialog'
+import { ConfirmDialog } from './components/ConfirmDialog'
+import { ReservationDetailDialog } from './components/ReservationDetailDialog'
 import { FloorPlan } from './components/FloorPlan'
 import { RecommendationPanel } from './components/RecommendationPanel'
 import { SearchForm } from './components/SearchForm'
 import type {
   SearchRequest,
   TableAvailability,
-  TableStatus,
+  TableStatus as TableStatusType,
   TableRecommendation,
   TableCombination,
   RestaurantTable,
@@ -60,9 +62,16 @@ function createDefaultSearchRequest(): SearchRequest {
   }
 }
 
-function toStatusMap(allTables: TableStatus[]): Record<number, TableAvailability> {
+function toStatusMap(allTables: TableStatusType[]): Record<number, TableAvailability> {
   return allTables.reduce<Record<number, TableAvailability>>((acc, tableStatus) => {
     acc[tableStatus.tableId] = tableStatus.status
+    return acc
+  }, {})
+}
+
+function toTableStatusMap(allTables: TableStatusType[]): Record<number, TableStatusType> {
+  return allTables.reduce<Record<number, TableStatusType>>((acc, tableStatus) => {
+    acc[tableStatus.tableId] = tableStatus
     return acc
   }, {})
 }
@@ -95,9 +104,22 @@ function App() {
   const [bookingSession, setBookingSession] = useState(0)
   const [bookingLoading, setBookingLoading] = useState(false)
   const [bookingError, setBookingError] = useState<string | null>(null)
+  const [bookingSuccess, setBookingSuccess] = useState<string | null>(null)
 
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [tableStatusMap, setTableStatusMap] = useState<Record<number, TableStatusType>>({})
+
+  const [detailOpen, setDetailOpen] = useState(false)
+  const [detailTableId, setDetailTableId] = useState<number | null>(null)
+  const [cancelLoading, setCancelLoading] = useState(false)
+  const [cancelError, setCancelError] = useState<string | null>(null)
+  const [cancelSuccess, setCancelSuccess] = useState<string | null>(null)
+
+  const [resetDialogOpen, setResetDialogOpen] = useState(false)
   const [resetting, setResetting] = useState(false)
+  const [resetResult, setResetResult] = useState<string | null>(null)
+
+  const [visibleRecommendedIds, setVisibleRecommendedIds] = useState<Set<number>>(new Set())
+  const [hoveredTableIds, setHoveredTableIds] = useState<Set<number>>(new Set())
 
   const zones = useMemo(() => Array.from(new Set(tables.map((table) => table.zone))).filter((zone) => zone !== 'Window').sort(), [tables])
 
@@ -117,19 +139,8 @@ function App() {
 
   const selectedTable = selectedTableId !== null ? tableById.get(selectedTableId) ?? null : null
 
-  useEffect(() => {
-    const timeout = successMessage
-      ? window.setTimeout(() => {
-          setSuccessMessage(null)
-        }, 3500)
-      : undefined
-
-    return () => {
-      if (timeout !== undefined) {
-        window.clearTimeout(timeout)
-      }
-    }
-  }, [successMessage])
+  // Floor plan only highlights tables visible in the scrollable recommendation list
+  const floorPlanHighlightIds = hasSearched ? visibleRecommendedIds : recommendedIds
 
   useEffect(() => {
     let mounted = true
@@ -169,9 +180,10 @@ function App() {
 
     try {
       const response = await reservationApi.searchTables(criteria)
-      setRecommendations(response.recommendations.slice(0, 5))
+      setRecommendations(response.recommendations)
       setCombinations(response.combinations ?? [])
       setStatusByTableId(toStatusMap(response.allTables))
+      setTableStatusMap(toTableStatusMap(response.allTables))
       setHasSearched(true)
 
       setSelectedTableId((current) => {
@@ -198,11 +210,19 @@ function App() {
   }, [autoSearchAttempted, searchRequest, tables.length])
 
   const handleSearchSubmit = (criteria: SearchRequest) => {
+    const searchDateTime = new Date(`${criteria.date}T${criteria.startTime}`)
+    if (searchDateTime < new Date()) {
+      setSearchError('Cannot search for past dates and times.')
+      return
+    }
+
     setSearchRequest(criteria)
+    setSearchError(null)
     setSelectedTableId(null)
     setSelectedCombination(null)
     setBookingOpen(false)
     setBookingError(null)
+    setBookingSuccess(null)
     void runSearch(criteria)
   }
 
@@ -211,10 +231,18 @@ function App() {
     setSelectedTableId(null)
     setBookingSession((current) => current + 1)
     setBookingError(null)
+    setBookingSuccess(null)
     setBookingOpen(true)
   }
 
   const openBooking = (tableId: number) => {
+    if (statusByTableId[tableId] === 'reserved') {
+      setDetailTableId(tableId)
+      setCancelError(null)
+      setCancelSuccess(null)
+      setDetailOpen(true)
+      return
+    }
     if (statusByTableId[tableId] !== 'available') {
       return
     }
@@ -222,28 +250,65 @@ function App() {
     setBookingSession((current) => current + 1)
     setSelectedTableId(tableId)
     setBookingError(null)
+    setBookingSuccess(null)
     setBookingOpen(true)
   }
 
-  const handleReset = async () => {
+  const handleResetClick = () => {
+    setResetResult(null)
+    setResetDialogOpen(true)
+  }
+
+  const handleResetConfirm = async () => {
     setResetting(true)
     try {
       await reservationApi.resetReservations()
-      setSuccessMessage('Reservations have been reset.')
+      setResetResult('Reservations have been reset.')
       setSelectedTableId(null)
       setSelectedCombination(null)
       setBookingOpen(false)
       await runSearch(searchRequest)
     } catch (error: unknown) {
-      setSearchError(errorMessage(error, 'Failed to reset reservations.'))
+      setResetResult(errorMessage(error, 'Failed to reset reservations.'))
     } finally {
       setResetting(false)
     }
   }
 
+  const closeDetail = () => {
+    setDetailOpen(false)
+    setCancelError(null)
+    setCancelSuccess(null)
+  }
+
+  const handleCancelReservation = async () => {
+    if (detailTableId === null) return
+    const status = tableStatusMap[detailTableId]
+    if (!status?.reservationId) return
+
+    setCancelLoading(true)
+    setCancelError(null)
+
+    try {
+      await reservationApi.cancelReservation(status.reservationId)
+      setCancelSuccess('Reservation has been cancelled.')
+      await runSearch(searchRequest)
+    } catch (error: unknown) {
+      setCancelError(errorMessage(error, 'Failed to cancel reservation.'))
+    } finally {
+      setCancelLoading(false)
+    }
+  }
+
+  const closeResetDialog = () => {
+    setResetDialogOpen(false)
+    setResetResult(null)
+  }
+
   const closeBooking = () => {
     setBookingOpen(false)
     setBookingError(null)
+    setBookingSuccess(null)
     setSelectedCombination(null)
   }
 
@@ -274,18 +339,15 @@ function App() {
           ...baseRequest,
           tableIds: [selectedCombination.tableId1, selectedCombination.tableId2],
         })
-        setSuccessMessage(`Reservation confirmed for ${payload.guestName.trim()} (${selectedCombination.tableName1} + ${selectedCombination.tableName2}).`)
+        setBookingSuccess(`Reservation confirmed for ${payload.guestName.trim()} (${selectedCombination.tableName1} + ${selectedCombination.tableName2}).`)
       } else {
         await reservationApi.createReservation({
           ...baseRequest,
           tableId: selectedTableId!,
         })
-        setSuccessMessage(`Reservation confirmed for ${payload.guestName.trim()}.`)
+        setBookingSuccess(`Reservation confirmed for ${payload.guestName.trim()}.`)
       }
 
-      setBookingOpen(false)
-      setSelectedTableId(null)
-      setSelectedCombination(null)
       await runSearch(searchRequest)
     } catch (error: unknown) {
       setBookingError(errorMessage(error, 'Unable to create reservation.'))
@@ -305,9 +367,9 @@ function App() {
           <button
             className="btn-reset"
             disabled={resetting}
-            onClick={() => void handleReset()}
+            onClick={handleResetClick}
           >
-            {resetting ? 'Resetting…' : 'Reset reservations'}
+            Reset reservations
           </button>
         </div>
         <p>Search by party, time, and preferences, then click a table on the map or in the ranking to book.</p>
@@ -321,7 +383,6 @@ function App() {
         onSubmit={handleSearchSubmit}
       />
 
-      {successMessage && <p className="status-banner success">{successMessage}</p>}
       {tablesError && <p className="status-banner error">{tablesError}</p>}
       {searchError && <p className="status-banner error">{searchError}</p>}
 
@@ -330,7 +391,8 @@ function App() {
           <FloorPlan
             tables={tables}
             statusByTableId={statusByTableId}
-            recommendedIds={recommendedIds}
+            recommendedIds={floorPlanHighlightIds}
+            hoveredTableIds={hoveredTableIds}
             selectedTableId={selectedTableId}
             selectedCombination={selectedCombination}
             isLoading={searchLoading || tablesLoading}
@@ -350,6 +412,8 @@ function App() {
             onBook={openBooking}
             onBookCombination={openCombinationBooking}
             onSelectCombination={setSelectedCombination}
+            onVisibleIdsChange={setVisibleRecommendedIds}
+            onHover={setHoveredTableIds}
           />
         </div>
       </main>
@@ -362,8 +426,31 @@ function App() {
         criteria={searchRequest}
         isSubmitting={bookingLoading}
         errorMessage={bookingError}
+        successMessage={bookingSuccess}
         onClose={closeBooking}
         onConfirm={handleBookingConfirm}
+      />
+
+      <ReservationDetailDialog
+        isOpen={detailOpen}
+        table={detailTableId !== null ? tableById.get(detailTableId) ?? null : null}
+        tableStatus={detailTableId !== null ? tableStatusMap[detailTableId] ?? null : null}
+        isCancelling={cancelLoading}
+        errorMessage={cancelError}
+        successMessage={cancelSuccess}
+        onClose={closeDetail}
+        onCancel={() => void handleCancelReservation()}
+      />
+
+      <ConfirmDialog
+        isOpen={resetDialogOpen}
+        title="Reset reservations"
+        message="This will delete all current reservations and generate new random ones. Continue?"
+        confirmLabel="Yes, reset"
+        isLoading={resetting}
+        result={resetResult}
+        onConfirm={() => void handleResetConfirm()}
+        onClose={closeResetDialog}
       />
     </div>
   )

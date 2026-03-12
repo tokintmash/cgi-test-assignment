@@ -1,8 +1,8 @@
 :root {
-  --color-available: #4CAF50;
-  --color-reserved: #F44336;
-  --color-recommended: #FFD700;
-  --color-selected: #2196F3;
+  --color-available: #34d399;
+  --color-reserved: #f87171;
+  --color-recommended: #fbbf24;
+  --color-selected: #60a5fa;
 
   --color-bg: #0b1018;
   --color-surface: #121926;

@@ -10,6 +10,7 @@ interface BookingDialogProps {
   criteria: SearchRequest
   isSubmitting: boolean
   errorMessage: string | null
+  successMessage: string | null
   onClose: () => void
   onConfirm: (payload: { guestName: string; duration: number }) => void
 }
@@ -21,6 +22,7 @@ export function BookingDialog({
   criteria,
   isSubmitting,
   errorMessage,
+  successMessage,
   onClose,
   onConfirm,
 }: BookingDialogProps) {
@@ -48,73 +50,87 @@ export function BookingDialog({
         aria-label={combination ? `Book ${combination.tableName1} + ${combination.tableName2}` : `Book ${table?.name}`}
         onClick={(event) => event.stopPropagation()}
       >
-        <h2>Confirm booking</h2>
-        {combination ? (
+        {successMessage ? (
           <>
-            <p>
-              {combination.tableName1} + {combination.tableName2} in {combination.zone} · Combined capacity {combination.combinedCapacity}
-            </p>
-            <p>
-              {criteria.date} at {criteria.startTime} · Party of {criteria.partySize}
-            </p>
-            <p className="dialog-features">
-              {combination.combinedFeatures.length > 0
-                ? combination.combinedFeatures.map((feature) => featureLabel(feature)).join(' • ')
-                : 'No special features'}
-            </p>
+            <h2>Booking confirmed</h2>
+            <p className="dialog-success">{successMessage}</p>
+            <div className="dialog-actions">
+              <button type="button" className="primary-button" onClick={onClose}>
+                Close
+              </button>
+            </div>
           </>
-        ) : table ? (
+        ) : (
           <>
-            <p>
-              {table.name} in {table.zone} · Capacity {table.capacity}
-            </p>
-            <p>
-              {criteria.date} at {criteria.startTime} · Party of {criteria.partySize}
-            </p>
-            <p className="dialog-features">
-              {table.features.length > 0
-                ? table.features.map((feature) => featureLabel(feature)).join(' • ')
-                : 'No special features'}
-            </p>
+            <h2>Confirm booking</h2>
+            {combination ? (
+              <>
+                <p>
+                  {combination.tableName1} + {combination.tableName2} in {combination.zone} · Combined seats {combination.combinedCapacity}
+                </p>
+                <p>
+                  {criteria.date} at {criteria.startTime} · Party of {criteria.partySize}
+                </p>
+                <p className="dialog-features">
+                  {combination.combinedFeatures.length > 0
+                    ? combination.combinedFeatures.map((feature) => featureLabel(feature)).join(' • ')
+                    : 'No special features'}
+                </p>
+              </>
+            ) : table ? (
+              <>
+                <p>
+                  {table.name} in {table.zone} · Seats {table.capacity}
+                </p>
+                <p>
+                  {criteria.date} at {criteria.startTime} · Party of {criteria.partySize}
+                </p>
+                <p className="dialog-features">
+                  {table.features.length > 0
+                    ? table.features.map((feature) => featureLabel(feature)).join(' • ')
+                    : 'No special features'}
+                </p>
+              </>
+            ) : null}
+
+            <form onSubmit={handleSubmit} className="booking-form">
+              <label>
+                Guest name
+                <input
+                  type="text"
+                  value={guestName}
+                  onChange={(event) => setGuestName(event.target.value)}
+                  placeholder="Guest name"
+                  required
+                  minLength={2}
+                />
+              </label>
+
+              <label>
+                Duration (minutes)
+                <input
+                  type="number"
+                  min={30}
+                  step={30}
+                  value={duration}
+                  onChange={(event) => setDuration(Number.parseInt(event.target.value, 10) || 30)}
+                  required
+                />
+              </label>
+
+              {errorMessage && <p className="dialog-error">{errorMessage}</p>}
+
+              <div className="dialog-actions">
+                <button type="button" className="ghost-button" onClick={onClose} disabled={isSubmitting}>
+                  Cancel
+                </button>
+                <button type="submit" className="primary-button" disabled={isSubmitting}>
+                  {isSubmitting ? 'Booking...' : 'Confirm reservation'}
+                </button>
+              </div>
+            </form>
           </>
-        ) : null}
-
-        <form onSubmit={handleSubmit} className="booking-form">
-          <label>
-            Guest name
-            <input
-              type="text"
-              value={guestName}
-              onChange={(event) => setGuestName(event.target.value)}
-              placeholder="Guest name"
-              required
-              minLength={2}
-            />
-          </label>
-
-          <label>
-            Duration (minutes)
-            <input
-              type="number"
-              min={30}
-              step={30}
-              value={duration}
-              onChange={(event) => setDuration(Number.parseInt(event.target.value, 10) || 30)}
-              required
-            />
-          </label>
-
-          {errorMessage && <p className="dialog-error">{errorMessage}</p>}
-
-          <div className="dialog-actions">
-            <button type="button" className="ghost-button" onClick={onClose} disabled={isSubmitting}>
-              Cancel
-            </button>
-            <button type="submit" className="primary-button" disabled={isSubmitting}>
-              {isSubmitting ? 'Booking...' : 'Confirm reservation'}
-            </button>
-          </div>
-        </form>
+        )}
       </section>
     </div>
   )

@@ -44,8 +44,11 @@ public class RecommendationService {
                 .map(table -> toTableStatus(table, request, endTime, reservationsOnDate))
                 .toList();
 
+        int maxCapacity = maxCapacityForParty(request.partySize());
+
         var recommendations = allTables.stream()
                 .filter(table -> table.getCapacity() >= request.partySize())
+                .filter(table -> table.getCapacity() <= maxCapacity)
                 .filter(table -> isAvailable(table, request, endTime, reservationsOnDate))
                 .filter(table -> hasAllPreferences(table, request.preferences()))
                 .filter(table -> matchesZone(table, request.zone()))
@@ -79,14 +82,24 @@ public class RecommendationService {
 
     private TableStatus toTableStatus(RestaurantTable table, SearchRequest request,
                                       LocalTime endTime, List<Reservation> reservationsOnDate) {
-        var available = isAvailable(table, request, endTime, reservationsOnDate);
+        var overlapping = reservationsOnDate.stream()
+                .filter(r -> r.getTableId().equals(table.getId())
+                        && r.getStartTime().isBefore(endTime)
+                        && r.getEndTime().isAfter(request.startTime()))
+                .findFirst();
+
+        if (overlapping.isPresent()) {
+            var r = overlapping.get();
+            return new TableStatus(
+                    table.getId(), table.getName(), table.getZone(), table.getCapacity(),
+                    "reserved", table.getFeatures(),
+                    r.getId(), r.getGuestName(), r.getStartTime(), r.getEndTime()
+            );
+        }
+
         return new TableStatus(
-                table.getId(),
-                table.getName(),
-                table.getZone(),
-                table.getCapacity(),
-                available ? "available" : "reserved",
-                table.getFeatures()
+                table.getId(), table.getName(), table.getZone(), table.getCapacity(),
+                "available", table.getFeatures()
         );
     }
 
@@ -156,6 +169,12 @@ public class RecommendationService {
         return requestedZone.equalsIgnoreCase(tableZone) ? 1.0 : 0.5;
     }
 
+    static int maxCapacityForParty(int partySize) {
+        if (partySize <= 2) return 4;
+        if (partySize <= 4) return 6;
+        return Integer.MAX_VALUE;
+    }
+
     private List<TableCombination> findCombinations(List<RestaurantTable> availableTables, SearchRequest request) {
         var results = new ArrayList<TableCombination>();
 
@@ -170,6 +189,9 @@ public class RecommendationService {
 
                 int combined = t1.getCapacity() + t2.getCapacity();
                 if (combined < request.partySize()) {
+                    continue;
+                }
+                if (combined > maxCapacityForParty(request.partySize())) {
                     continue;
                 }
 

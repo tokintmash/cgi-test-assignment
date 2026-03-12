@@ -1,6 +1,29 @@
 .recommendation-panel {
   animation: rise-in 500ms ease;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.recommendation-scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.recommendation-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.recommendation-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.recommendation-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-border-soft);
+  border-radius: 3px;
 }
 
 .recommendation-list {
@@ -18,11 +41,16 @@
   display: grid;
   gap: 10px;
   background: var(--color-surface);
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.recommendation-item:hover {
+  background: var(--color-surface-alt);
 }
 
 .recommendation-item.selected {
   border-color: var(--color-selected);
-  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
 }
 
 .recommendation-summary {
@@ -70,12 +98,6 @@
   margin: 0 0 4px;
   font-size: 0.95rem;
   color: var(--color-text-primary);
-}
-
-.combinations-subtitle {
-  margin: 0 0 12px;
-  font-size: 0.82rem;
-  color: var(--color-text-secondary);
 }
 
 .combination-item {
