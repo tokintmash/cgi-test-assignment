@@ -5,6 +5,8 @@ import java.util.List;
 public record SearchResponse(
         List<TableRecommendation> recommendations,
         List<TableCombination> combinations,
-        List<TableStatus> allTables
+        List<TableStatus> allTables,
+        WeatherData weather,
+        String weatherWarning
 ) {
 }

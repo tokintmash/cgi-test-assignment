@@ -1,6 +1,7 @@
 package com.restaurant.service;
 
 import com.restaurant.dto.SearchRequest;
+import com.restaurant.dto.WeatherData;
 import com.restaurant.model.Reservation;
 import com.restaurant.model.RestaurantTable;
 import com.restaurant.model.TableFeature;
@@ -29,6 +30,9 @@ class RecommendationServiceTest {
     @Mock
     private ReservationRepository reservationRepository;
 
+    @Mock
+    private WeatherService weatherService;
+
     private RecommendationService service;
 
     private static final LocalDate DATE = LocalDate.of(2026, 3, 10);
@@ -36,7 +40,7 @@ class RecommendationServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new RecommendationService(tableRepository, reservationRepository);
+        service = new RecommendationService(tableRepository, reservationRepository, weatherService);
     }
 
     private RestaurantTable createTable(Long id, String name, int capacity, String zone, Set<TableFeature> features) {
@@ -50,6 +54,7 @@ class RecommendationServiceTest {
 
         when(tableRepository.findAll()).thenReturn(List.of(table));
         when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
 
         var response = service.search(request);
 
@@ -59,8 +64,9 @@ class RecommendationServiceTest {
         assertEquals(1.0, rec.scoreBreakdown().efficiency());
         assertEquals(1.0, rec.scoreBreakdown().preferenceMatch());
         assertEquals(1.0, rec.scoreBreakdown().zoneMatch());
-        // total = (1.0*0.40) + (1.0*0.35) + (1.0*0.15) + (0.1*0.10) = 0.91
-        assertEquals(0.91, rec.score());
+        assertEquals(0.0, rec.scoreBreakdown().weatherPenalty());
+        // total = (1.0*0.40) + (1.0*0.35) + (1.0*0.10) + (0.0*0.10) + (0.1*0.05) = 0.855
+        assertEquals(0.86, rec.score());
     }
 
     @Test
@@ -70,6 +76,7 @@ class RecommendationServiceTest {
 
         when(tableRepository.findAll()).thenReturn(List.of(table));
         when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
 
         var response = service.search(request);
 
@@ -83,6 +90,7 @@ class RecommendationServiceTest {
 
         when(tableRepository.findAll()).thenReturn(List.of(table));
         when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
 
         var response = service.search(request);
 
@@ -100,6 +108,7 @@ class RecommendationServiceTest {
 
         when(tableRepository.findAll()).thenReturn(List.of(small, large));
         when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
 
         var response = service.search(request);
 
@@ -121,6 +130,7 @@ class RecommendationServiceTest {
 
         when(tableRepository.findAll()).thenReturn(List.of(table));
         when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
 
         var response = service.search(request);
 
@@ -134,11 +144,12 @@ class RecommendationServiceTest {
         var cap6 = createTable(2L, "M1", 6, "Main Hall", Set.of());
         var cap8 = createTable(3L, "M2", 8, "Main Hall", Set.of());
 
-        // Party of 2: max capacity = 4
-        var request2 = new SearchRequest(DATE, TIME, 2, 120, null, null);
         when(tableRepository.findAll()).thenReturn(List.of(cap4, cap6, cap8));
         when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
 
+        // Party of 2: max capacity = 4
+        var request2 = new SearchRequest(DATE, TIME, 2, 120, null, null);
         var response2 = service.search(request2);
         assertEquals(1, response2.recommendations().size());
         assertEquals(1L, response2.recommendations().get(0).tableId());
@@ -164,6 +175,7 @@ class RecommendationServiceTest {
 
         when(tableRepository.findAll()).thenReturn(List.of(table));
         when(reservationRepository.findByDate(DATE)).thenReturn(List.of(overlappingReservation));
+        when(weatherService.getCurrentWeather()).thenReturn(null);
 
         var response = service.search(request);
 
@@ -180,6 +192,7 @@ class RecommendationServiceTest {
 
         when(tableRepository.findAll()).thenReturn(List.of(okTable, perfectTable));
         when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
 
         var response = service.search(request);
 
@@ -187,5 +200,63 @@ class RecommendationServiceTest {
         assertEquals(1L, response.recommendations().get(0).tableId());
         assertEquals(2L, response.recommendations().get(1).tableId());
         assertTrue(response.recommendations().get(0).score() > response.recommendations().get(1).score());
+    }
+
+    @Test
+    void terraceTable_penalizedInColdWeather() {
+        var terraceTable = createTable(1L, "T1", 4, "Terrace", Set.of());
+        var indoorTable = createTable(2L, "M1", 4, "Main Hall", Set.of());
+        var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
+
+        when(tableRepository.findAll()).thenReturn(List.of(terraceTable, indoorTable));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        // 3°C — below 5°C threshold → full penalty (-1.0)
+        when(weatherService.getCurrentWeather()).thenReturn(new WeatherData(3.0, 10.0));
+
+        var response = service.search(request);
+
+        assertEquals(2, response.recommendations().size());
+        // Indoor table should rank first due to terrace penalty
+        assertEquals(2L, response.recommendations().get(0).tableId());
+        assertEquals(1L, response.recommendations().get(1).tableId());
+
+        var terraceRec = response.recommendations().get(1);
+        assertEquals(-1.0, terraceRec.scoreBreakdown().weatherPenalty());
+
+        var indoorRec = response.recommendations().get(0);
+        assertEquals(0.0, indoorRec.scoreBreakdown().weatherPenalty());
+    }
+
+    @Test
+    void terraceTable_noPenaltyInWarmWeather() {
+        var terraceTable = createTable(1L, "T1", 4, "Terrace", Set.of());
+        var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
+
+        when(tableRepository.findAll()).thenReturn(List.of(terraceTable));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        // 22°C, light wind — no penalty
+        when(weatherService.getCurrentWeather()).thenReturn(new WeatherData(22.0, 10.0));
+
+        var response = service.search(request);
+
+        assertEquals(1, response.recommendations().size());
+        assertEquals(0.0, response.recommendations().get(0).scoreBreakdown().weatherPenalty());
+    }
+
+    @Test
+    void weatherUnavailable_noPenaltyApplied() {
+        var terraceTable = createTable(1L, "T1", 4, "Terrace", Set.of());
+        var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
+
+        when(tableRepository.findAll()).thenReturn(List.of(terraceTable));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
+
+        var response = service.search(request);
+
+        assertEquals(1, response.recommendations().size());
+        assertEquals(0.0, response.recommendations().get(0).scoreBreakdown().weatherPenalty());
+        assertNull(response.weather());
+        assertNull(response.weatherWarning());
     }
 }

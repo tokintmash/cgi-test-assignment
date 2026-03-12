@@ -9,7 +9,7 @@
 | 2 | Recommendation engine + unit tests | `feat/recommendation-engine` | ✅ Done | Phase 1 |
 | 3 | Frontend (search, floor plan, booking) | `feat/frontend-ui` | ✅ Done | Phase 2 |
 | 4 | Integration, polish & testing | `fix/integration-polish` | ⬜ Not started | Phase 3 |
-| 4.5 | Weather-aware recommendations | `feat/weather-widget` | ⬜ Not started | Phase 4 |
+| 4.5 | Weather-aware recommendations | `feat/weather-widget` | ✅ Done | Phase 4 |
 | 5 | Docker | `feat/docker` | ⬜ Not started | Phase 4.5 |
 | 6 | Documentation & submission | `docs/final` | ⬜ Not started | Phase 5 |
 
@@ -82,17 +82,17 @@
 - [x] Fixed layout height (floor plan + recommendations locked at 740px, right pane scrolls)
 
 ### Phase 4.5: Weather-Aware Recommendations (`feat/weather-widget`)
-- [ ] `WeatherData` record DTO
-- [ ] `WeatherService` — Open-Meteo fetch, 10-min cache, 5s timeout
-- [ ] `WeatherController` — `GET /api/weather`
-- [ ] Add `weatherPenalty` to `ScoreBreakdown`
-- [ ] Add `weather` + `weatherWarning` to `SearchResponse`
-- [ ] Update `RecommendationService` — new weights (Z=0.10, W=0.10, B=0.05), penalty calc
-- [ ] Frontend types + API client (`getWeather()`)
-- [ ] Weather badge in header + warning banner
-- [ ] Unit tests: terrace penalty in cold/warm/unavailable weather
-- [ ] `WeatherServiceTest` — JSON parsing, cache TTL, failure fallback
-- [ ] Update TESTS.md, AI-USAGE.md
+- [x] `WeatherData` record DTO
+- [x] `WeatherService` — Open-Meteo fetch, 10-min cache, 5s timeout
+- [x] `WeatherController` — `GET /api/weather`
+- [x] Add `weatherPenalty` to `ScoreBreakdown`
+- [x] Add `weather` + `weatherWarning` to `SearchResponse`
+- [x] Update `RecommendationService` — new weights (Z=0.10, W=0.10, B=0.05), penalty calc
+- [x] Frontend types + API client (`getWeather()`)
+- [x] Weather badge in header + warning banner
+- [x] Unit tests: terrace penalty in cold/warm/unavailable weather
+- [x] `WeatherServiceTest` — JSON parsing, cache TTL, failure fallback
+- [x] Update TESTS.md, AI-USAGE.md
 
 ### Phase 5: Docker (`feat/docker`)
 - [ ] Backend `Dockerfile` (multi-stage build)
