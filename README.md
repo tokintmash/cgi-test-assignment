@@ -7,7 +7,8 @@ An intelligent table reservation system with an interactive SVG floor plan and t
 ## ✨ Features
 
 - **Interactive floor plan** — SVG-based top-down restaurant view with color-coded table status
-- **Smart recommendations** — tables ranked by capacity efficiency, preference match, and zone fit
+- **Smart recommendations** — tables ranked by capacity efficiency, preference match, zone fit, and weather conditions
+- **Weather-aware scoring** — real-time weather from Open-Meteo penalizes outdoor terrace tables in cold or windy conditions; at ≤5°C terrace tables are excluded entirely
 - **Transparent scoring** — see *why* each table is recommended with per-factor score breakdown
 - **Preference support** — window seat, privacy, accessibility, children's play area proximity
 - **Realistic demo data** — randomly generated reservations on each startup, with a reset button
@@ -55,11 +56,12 @@ When a user searches for a table, the system:
 1. Filters out tables that are reserved during the requested time window
 2. Filters by minimum capacity for the party size
 3. Filters by zone if one is requested
-4. Scores each remaining table on three factors:
-   - **Capacity efficiency (40%)** — prefers tables whose size closely matches the party (avoids seating 2 people at an 8-top)
-   - **Preference match (35%)** — fraction of requested preferences the table supports
-   - **Zone match (15%)** — bonus if the table is in the preferred zone
-   - **Base score (10%)** — ensures all valid tables get a minimum score
+4. Scores each remaining table on five factors:
+   - **Capacity efficiency (35%)** — prefers tables whose size closely matches the party (avoids seating 2 people at an 8-top)
+   - **Preference match (30%)** — fraction of requested preferences the table supports
+   - **Zone match (10%)** — bonus if the table is in the preferred zone
+   - **Weather penalty (20%)** — penalizes Terrace tables in cold/windy weather (0 at ≥15°C, linear to -1.0 at ≤5°C; at -1.0 terrace is excluded)
+   - **Base score (5%)** — ensures all valid tables get a minimum score
 5. Returns the top-ranked tables with a per-factor score breakdown
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design documentation.
@@ -70,8 +72,10 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design documentation.
 |---|---|---|
 | `POST` | `/api/tables/search` | Search available tables with recommendations |
 | `POST` | `/api/reservations` | Book a table |
+| `DELETE` | `/api/reservations/{id}` | Cancel a reservation |
 | `POST` | `/api/reservations/reset` | Regenerate random reservations |
 | `GET` | `/api/tables` | Get all tables with current status |
+| `GET` | `/api/weather` | Current weather data (Open-Meteo, 10-min cache) |
 
 ## 🧪 Testing
 

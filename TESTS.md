@@ -10,7 +10,7 @@ Run all backend tests: `cd backend && ./mvnw test`
 
 | # | Test | Verifies |
 |---|---|---|
-| 1 | `perfectMatch_scoresHighest` | Exact capacity + all preferences + correct zone scores ~0.86 (updated weights) |
+| 1 | `perfectMatch_scoresHighest` | Exact capacity + all preferences + correct zone scores 0.75 (weather-adjusted weights) |
 | 2 | `partialMatch_isExcluded` | Tables missing a requested preference are excluded entirely |
 | 3 | `noPreferences_defaultsToFullPreferenceScore` | Empty preference set gives full preference score (1.0) |
 | 4 | `oversizedTable_getsLowerEfficiency` | Table within cap but larger than party gets lower efficiency |
@@ -18,7 +18,7 @@ Run all backend tests: `cd backend && ./mvnw test`
 | 6 | `noResults_whenAllTablesTooSmall` | Returns empty list when no table fits the party |
 | 7 | `reservedTables_areExcludedFromRecommendations` | Reserved tables do not appear in recommendations |
 | 8 | `multipleTablesRankedByScore` | Results are sorted by descending score |
-| 9 | `terraceTable_penalizedInColdWeather` | Terrace tables get -1.0 weather penalty at 3°C, indoor tables unaffected |
+| 9 | `terraceTable_excludedInColdWeather` | Terrace tables excluded at 3°C (penalty -1.0), only indoor tables returned |
 | 10 | `terraceTable_noPenaltyInWarmWeather` | Terrace tables get 0.0 weather penalty at 22°C |
 | 11 | `weatherUnavailable_noPenaltyApplied` | Null weather → no penalty, null weather/warning in response |
 
