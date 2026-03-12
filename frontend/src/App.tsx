@@ -388,7 +388,7 @@ function App() {
           <div className="header-actions">
             {weather && (
               <span className="weather-badge">
-                {Math.round(weather.temperatureC)}°C · {Math.round(weather.windSpeedKmh)} km/h
+                {Math.round(weather.temperatureC)}°C · {Math.round(weather.windSpeedKmh / 3.6)} m/s
               </span>
             )}
             <button
@@ -400,7 +400,7 @@ function App() {
             </button>
           </div>
         </div>
-        <p>Search by party, time, and preferences, then click a table on the map or in the ranking to book.</p>
+        {weatherWarning && <p className="status-banner weather-warning">{weatherWarning}</p>}
       </header>
 
       <SearchForm
@@ -413,7 +413,6 @@ function App() {
 
       {tablesError && <p className="status-banner error">{tablesError}</p>}
       {searchError && <p className="status-banner error">{searchError}</p>}
-      {weatherWarning && <p className="status-banner weather-warning">{weatherWarning}</p>}
 
       <main className="layout-grid">
         <div className="left-column">

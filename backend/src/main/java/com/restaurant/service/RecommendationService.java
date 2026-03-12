@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 @Service
 public class RecommendationService {
 
-    private static final double WEIGHT_EFFICIENCY = 0.40;
-    private static final double WEIGHT_PREFERENCE = 0.35;
+    private static final double WEIGHT_EFFICIENCY = 0.35;
+    private static final double WEIGHT_PREFERENCE = 0.30;
     private static final double WEIGHT_ZONE = 0.10;
-    private static final double WEIGHT_WEATHER = 0.10;
+    private static final double WEIGHT_WEATHER = 0.20;
     private static final double WEIGHT_BASE = 0.05;
     private static final double BASE_SCORE = 0.1;
 
@@ -60,6 +60,7 @@ public class RecommendationService {
                 .filter(table -> isAvailable(table, request, endTime, reservationsOnDate))
                 .filter(table -> hasAllPreferences(table, request.preferences()))
                 .filter(table -> matchesZone(table, request.zone()))
+                .filter(table -> calculateWeatherPenalty(table.getZone(), weather) > -1.0)
                 .map(table -> toRecommendation(table, request, weather))
                 .sorted(Comparator.comparingDouble(TableRecommendation::score).reversed())
                 .toList();
@@ -94,8 +95,8 @@ public class RecommendationService {
         if (zone != null && !zone.isBlank() && !TERRACE_ZONE.equalsIgnoreCase(zone)) {
             return null;
         }
-        return String.format("Outdoor seating may be uncomfortable — temperature %.0f°C, wind %.0f km/h",
-                weather.temperatureC(), weather.windSpeedKmh());
+        return String.format("Outdoor seating may be uncomfortable — temperature %.0f°C, wind %.0f m/s",
+                weather.temperatureC(), weather.windSpeedKmh() / 3.6);
     }
 
     private boolean isAvailable(RestaurantTable table, SearchRequest request,

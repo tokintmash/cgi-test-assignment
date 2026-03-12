@@ -65,8 +65,8 @@ class RecommendationServiceTest {
         assertEquals(1.0, rec.scoreBreakdown().preferenceMatch());
         assertEquals(1.0, rec.scoreBreakdown().zoneMatch());
         assertEquals(0.0, rec.scoreBreakdown().weatherPenalty());
-        // total = (1.0*0.40) + (1.0*0.35) + (1.0*0.10) + (0.0*0.10) + (0.1*0.05) = 0.855
-        assertEquals(0.86, rec.score());
+        // total = (1.0*0.35) + (1.0*0.30) + (1.0*0.10) + (0.0*0.20) + (0.1*0.05) = 0.755 → rounds to 0.75
+        assertEquals(0.75, rec.score());
     }
 
     @Test
@@ -203,28 +203,21 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void terraceTable_penalizedInColdWeather() {
+    void terraceTable_excludedInColdWeather() {
         var terraceTable = createTable(1L, "T1", 4, "Terrace", Set.of());
         var indoorTable = createTable(2L, "M1", 4, "Main Hall", Set.of());
         var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
 
         when(tableRepository.findAll()).thenReturn(List.of(terraceTable, indoorTable));
         when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
-        // 3°C — below 5°C threshold → full penalty (-1.0)
+        // 3°C — at or below 5°C → full penalty (-1.0) → terrace excluded
         when(weatherService.getCurrentWeather()).thenReturn(new WeatherData(3.0, 10.0));
 
         var response = service.search(request);
 
-        assertEquals(2, response.recommendations().size());
-        // Indoor table should rank first due to terrace penalty
+        assertEquals(1, response.recommendations().size());
         assertEquals(2L, response.recommendations().get(0).tableId());
-        assertEquals(1L, response.recommendations().get(1).tableId());
-
-        var terraceRec = response.recommendations().get(1);
-        assertEquals(-1.0, terraceRec.scoreBreakdown().weatherPenalty());
-
-        var indoorRec = response.recommendations().get(0);
-        assertEquals(0.0, indoorRec.scoreBreakdown().weatherPenalty());
+        assertEquals(0.0, response.recommendations().get(0).scoreBreakdown().weatherPenalty());
     }
 
     @Test
