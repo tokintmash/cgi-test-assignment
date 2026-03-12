@@ -47,6 +47,11 @@ class RecommendationServiceTest {
         return new RestaurantTable(id, name, capacity, zone, 0, 0, 60, 60, "rectangle", features);
     }
 
+    private RestaurantTable createTable(Long id, String name, int capacity, String zone, Set<TableFeature> features,
+                                        double posX, double posY) {
+        return new RestaurantTable(id, name, capacity, zone, posX, posY, 60, 60, "rectangle", features);
+    }
+
     @Test
     void perfectMatch_scoresHighest() {
         var table = createTable(1L, "W1", 4, "Window", Set.of(TableFeature.WINDOW, TableFeature.ACCESSIBLE));
@@ -234,6 +239,95 @@ class RecommendationServiceTest {
 
         assertEquals(1, response.recommendations().size());
         assertEquals(0.0, response.recommendations().get(0).scoreBreakdown().weatherPenalty());
+    }
+
+    // --- Combination tests ---
+
+    @Test
+    void combination_foundWhenNoSingleTableFits() {
+        // Two adjacent 2-seat tables in the same zone, party of 4 needs both
+        var t1 = createTable(1L, "M1", 2, "Main Hall", Set.of(), 0, 0);
+        var t2 = createTable(2L, "M2", 2, "Main Hall", Set.of(), 70, 0);
+        var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
+
+        when(tableRepository.findAll()).thenReturn(List.of(t1, t2));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
+
+        var response = service.search(request);
+
+        assertTrue(response.recommendations().isEmpty());
+        assertEquals(1, response.combinations().size());
+        var combo = response.combinations().get(0);
+        assertEquals(4, combo.combinedCapacity());
+        assertEquals("Main Hall", combo.zone());
+    }
+
+    @Test
+    void combination_excludedWhenTablesNotAdjacent() {
+        // Two tables too far apart (gap > 60px)
+        var t1 = createTable(1L, "M1", 2, "Main Hall", Set.of(), 0, 0);
+        var t2 = createTable(2L, "M2", 2, "Main Hall", Set.of(), 200, 0);
+        var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
+
+        when(tableRepository.findAll()).thenReturn(List.of(t1, t2));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
+
+        var response = service.search(request);
+
+        assertTrue(response.recommendations().isEmpty());
+        assertTrue(response.combinations().isEmpty());
+    }
+
+    @Test
+    void combination_excludedWhenTablesInDifferentZones() {
+        var t1 = createTable(1L, "M1", 2, "Main Hall", Set.of(), 0, 0);
+        var t2 = createTable(2L, "T1", 2, "Terrace", Set.of(), 70, 0);
+        var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
+
+        when(tableRepository.findAll()).thenReturn(List.of(t1, t2));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(null);
+
+        var response = service.search(request);
+
+        assertTrue(response.recommendations().isEmpty());
+        assertTrue(response.combinations().isEmpty());
+    }
+
+    @Test
+    void combination_terracePairExcludedInColdWeather() {
+        // Two adjacent terrace tables — should be filtered out at ≤5°C
+        var t1 = createTable(1L, "T1", 2, "Terrace", Set.of(), 0, 0);
+        var t2 = createTable(2L, "T2", 2, "Terrace", Set.of(), 70, 0);
+        var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
+
+        when(tableRepository.findAll()).thenReturn(List.of(t1, t2));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(new WeatherData(3.0, 10.0));
+
+        var response = service.search(request);
+
+        assertTrue(response.recommendations().isEmpty());
+        assertTrue(response.combinations().isEmpty());
+    }
+
+    @Test
+    void combination_inheritsWorstWeatherPenalty() {
+        // Warm weather — terrace combo should have 0.0 penalty
+        var t1 = createTable(1L, "T1", 2, "Terrace", Set.of(), 0, 0);
+        var t2 = createTable(2L, "T2", 2, "Terrace", Set.of(), 70, 0);
+        var request = new SearchRequest(DATE, TIME, 4, 120, null, null);
+
+        when(tableRepository.findAll()).thenReturn(List.of(t1, t2));
+        when(reservationRepository.findByDate(DATE)).thenReturn(List.of());
+        when(weatherService.getCurrentWeather()).thenReturn(new WeatherData(22.0, 10.0));
+
+        var response = service.search(request);
+
+        assertEquals(1, response.combinations().size());
+        assertEquals(0.0, response.combinations().get(0).scoreBreakdown().weatherPenalty());
     }
 
     @Test
