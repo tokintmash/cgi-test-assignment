@@ -2,13 +2,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { reservationApi } from './api/reservationApi'
 import { BookingDialog } from './components/BookingDialog'
 import { ConfirmDialog } from './components/ConfirmDialog'
+import { ReservationDetailDialog } from './components/ReservationDetailDialog'
 import { FloorPlan } from './components/FloorPlan'
 import { RecommendationPanel } from './components/RecommendationPanel'
 import { SearchForm } from './components/SearchForm'
 import type {
   SearchRequest,
   TableAvailability,
-  TableStatus,
+  TableStatus as TableStatusType,
   TableRecommendation,
   TableCombination,
   RestaurantTable,
@@ -61,9 +62,16 @@ function createDefaultSearchRequest(): SearchRequest {
   }
 }
 
-function toStatusMap(allTables: TableStatus[]): Record<number, TableAvailability> {
+function toStatusMap(allTables: TableStatusType[]): Record<number, TableAvailability> {
   return allTables.reduce<Record<number, TableAvailability>>((acc, tableStatus) => {
     acc[tableStatus.tableId] = tableStatus.status
+    return acc
+  }, {})
+}
+
+function toTableStatusMap(allTables: TableStatusType[]): Record<number, TableStatusType> {
+  return allTables.reduce<Record<number, TableStatusType>>((acc, tableStatus) => {
+    acc[tableStatus.tableId] = tableStatus
     return acc
   }, {})
 }
@@ -97,6 +105,14 @@ function App() {
   const [bookingLoading, setBookingLoading] = useState(false)
   const [bookingError, setBookingError] = useState<string | null>(null)
   const [bookingSuccess, setBookingSuccess] = useState<string | null>(null)
+
+  const [tableStatusMap, setTableStatusMap] = useState<Record<number, TableStatusType>>({})
+
+  const [detailOpen, setDetailOpen] = useState(false)
+  const [detailTableId, setDetailTableId] = useState<number | null>(null)
+  const [cancelLoading, setCancelLoading] = useState(false)
+  const [cancelError, setCancelError] = useState<string | null>(null)
+  const [cancelSuccess, setCancelSuccess] = useState<string | null>(null)
 
   const [resetDialogOpen, setResetDialogOpen] = useState(false)
   const [resetting, setResetting] = useState(false)
@@ -167,6 +183,7 @@ function App() {
       setRecommendations(response.recommendations)
       setCombinations(response.combinations ?? [])
       setStatusByTableId(toStatusMap(response.allTables))
+      setTableStatusMap(toTableStatusMap(response.allTables))
       setHasSearched(true)
 
       setSelectedTableId((current) => {
@@ -219,6 +236,13 @@ function App() {
   }
 
   const openBooking = (tableId: number) => {
+    if (statusByTableId[tableId] === 'reserved') {
+      setDetailTableId(tableId)
+      setCancelError(null)
+      setCancelSuccess(null)
+      setDetailOpen(true)
+      return
+    }
     if (statusByTableId[tableId] !== 'available') {
       return
     }
@@ -248,6 +272,31 @@ function App() {
       setResetResult(errorMessage(error, 'Failed to reset reservations.'))
     } finally {
       setResetting(false)
+    }
+  }
+
+  const closeDetail = () => {
+    setDetailOpen(false)
+    setCancelError(null)
+    setCancelSuccess(null)
+  }
+
+  const handleCancelReservation = async () => {
+    if (detailTableId === null) return
+    const status = tableStatusMap[detailTableId]
+    if (!status?.reservationId) return
+
+    setCancelLoading(true)
+    setCancelError(null)
+
+    try {
+      await reservationApi.cancelReservation(status.reservationId)
+      setCancelSuccess('Reservation has been cancelled.')
+      await runSearch(searchRequest)
+    } catch (error: unknown) {
+      setCancelError(errorMessage(error, 'Failed to cancel reservation.'))
+    } finally {
+      setCancelLoading(false)
     }
   }
 
@@ -380,6 +429,17 @@ function App() {
         successMessage={bookingSuccess}
         onClose={closeBooking}
         onConfirm={handleBookingConfirm}
+      />
+
+      <ReservationDetailDialog
+        isOpen={detailOpen}
+        table={detailTableId !== null ? tableById.get(detailTableId) ?? null : null}
+        tableStatus={detailTableId !== null ? tableStatusMap[detailTableId] ?? null : null}
+        isCancelling={cancelLoading}
+        errorMessage={cancelError}
+        successMessage={cancelSuccess}
+        onClose={closeDetail}
+        onCancel={() => void handleCancelReservation()}
       />
 
       <ConfirmDialog

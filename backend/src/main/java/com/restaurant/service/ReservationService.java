@@ -64,6 +64,12 @@ public class ReservationService {
         return reservationRepository.findByDate(date);
     }
 
+    public void cancelReservation(Long reservationId) {
+        var reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + reservationId));
+        reservationRepository.delete(reservation);
+    }
+
     public void resetReservations() {
         dataInitializer.resetReservations();
     }

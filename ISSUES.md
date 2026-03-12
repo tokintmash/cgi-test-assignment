@@ -5,7 +5,7 @@ Raw findings from manual testing. Resolved issues get moved to PROBLEMS.md with 
 ## Reservation
 [x] Remove the reservation popup between search and floor plan blocks. It makes the design jump. Instead, add the confirmation inside the table modal  
 [x] Reset reservations should have a confirmation modal with Yes/No and put the confirmation message in there as well.
-[] Currenlty, a reserved table cannot be clicked, making cancelling reservation impossible. Make it open in a modal and add functionality for cancelling a resevation.  
+[x] Currenlty, a reserved table cannot be clicked, making cancelling reservation impossible. Make it open in a modal and add functionality for cancelling a resevation.  
 
 ## Layout
 [x] Make T3 bottom to line up with T2 and T4  

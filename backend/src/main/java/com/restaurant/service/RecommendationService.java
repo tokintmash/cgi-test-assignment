@@ -82,14 +82,24 @@ public class RecommendationService {
 
     private TableStatus toTableStatus(RestaurantTable table, SearchRequest request,
                                       LocalTime endTime, List<Reservation> reservationsOnDate) {
-        var available = isAvailable(table, request, endTime, reservationsOnDate);
+        var overlapping = reservationsOnDate.stream()
+                .filter(r -> r.getTableId().equals(table.getId())
+                        && r.getStartTime().isBefore(endTime)
+                        && r.getEndTime().isAfter(request.startTime()))
+                .findFirst();
+
+        if (overlapping.isPresent()) {
+            var r = overlapping.get();
+            return new TableStatus(
+                    table.getId(), table.getName(), table.getZone(), table.getCapacity(),
+                    "reserved", table.getFeatures(),
+                    r.getId(), r.getGuestName(), r.getStartTime(), r.getEndTime()
+            );
+        }
+
         return new TableStatus(
-                table.getId(),
-                table.getName(),
-                table.getZone(),
-                table.getCapacity(),
-                available ? "available" : "reserved",
-                table.getFeatures()
+                table.getId(), table.getName(), table.getZone(), table.getCapacity(),
+                "available", table.getFeatures()
         );
     }
 

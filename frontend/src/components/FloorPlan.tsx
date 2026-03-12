@@ -196,7 +196,7 @@ export function FloorPlan({
 
           {tables.map((table) => {
             const visualState = toVisualState(table.id, statusByTableId, recommendedIds, hoveredTableIds, selectedTableId, selectedCombination)
-            const selectable = statusByTableId[table.id] !== 'reserved' && statusByTableId[table.id] !== undefined
+            const selectable = statusByTableId[table.id] !== undefined
 
             return (
               <TableShape
