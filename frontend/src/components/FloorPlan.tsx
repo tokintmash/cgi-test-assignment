@@ -144,14 +144,7 @@ export function FloorPlan({
       <div className="svg-wrapper" role="img" aria-label="Restaurant floor plan with table availability">
         {isLoading && <div className="plan-overlay">Refreshing availability...</div>}
         <svg ref={svgRef} viewBox="0 -25 700 585" className="floor-svg" preserveAspectRatio="xMidYMid meet">
-          <g className="zone zone-window">
-            <rect x={10} y={-10} width={145} height={320} rx={18} />
-            <text x={30} y={15} className="zone-label">
-              Window
-            </text>
-          </g>
           <g className="zone zone-main">
-            <rect x={170} y={-10} width={325} height={445} rx={18} />
             <text x={185} y={15} className="zone-label">
               Main Hall
             </text>
@@ -163,13 +156,11 @@ export function FloorPlan({
             </text>
           </g>
           <g className="zone zone-private">
-            <rect x={510} y={-10} width={180} height={320} rx={18} />
             <text x={520} y={15} className="zone-label">
               Private
             </text>
           </g>
           <g className="zone zone-terrace">
-            <rect x={10} y={450} width={680} height={100} rx={18} />
             <text x={30} y={470} className="zone-label">
               Terrace
             </text>

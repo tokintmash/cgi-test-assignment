@@ -85,10 +85,6 @@
   stroke-dasharray: 4 6;
 }
 
-.zone-main rect {
-  fill: transparent;
-  stroke: transparent;
-}
 
 .zone-label {
   font-size: 13px;
