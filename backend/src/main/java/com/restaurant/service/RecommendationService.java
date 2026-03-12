@@ -72,6 +72,7 @@ public class RecommendationService {
                     .filter(table -> !table.getFeatures().contains(TableFeature.PRIVATE))
                     .filter(table -> isAvailable(table, request, endTime, reservationsOnDate))
                     .filter(table -> matchesZone(table, request.zone()))
+                    .filter(table -> calculateWeatherPenalty(table.getZone(), weather) > -1.0)
                     .toList();
             combinations = findCombinations(availableTables, request, weather);
         } else {

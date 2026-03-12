@@ -85,7 +85,7 @@ class WeatherServiceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    void getCurrentWeather_returnsCachedOnSubsequentFailure() throws Exception {
+    void getCurrentWeather_returnsNullWhenCacheClearedAndApiFails() throws Exception {
         var httpClient = mock(HttpClient.class);
         var httpResponse = mock(HttpResponse.class);
         when(httpResponse.statusCode()).thenReturn(200);
@@ -106,12 +106,11 @@ class WeatherServiceTest {
         WeatherData first = service.getCurrentWeather();
         assertNotNull(first);
 
-        // Expire cache and make next call fail
+        // Full cache clear + API failure — no data available at all
         service.clearCache();
         when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
                 .thenThrow(new RuntimeException("Timeout"));
 
-        // Should return stale cached data (cachedWeather was cleared, so returns null)
         WeatherData second = service.getCurrentWeather();
         assertNull(second);
     }

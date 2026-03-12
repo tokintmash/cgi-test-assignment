@@ -56,7 +56,13 @@ Run all backend tests: `cd backend && ./mvnw test`
 | 1 | `parseWeatherJson_extractsTemperatureAndWind` | Correctly parses Open-Meteo JSON response |
 | 2 | `getCurrentWeather_cachesResult` | Second call uses cache, no additional HTTP call |
 | 3 | `getCurrentWeather_returnsNullOnFailure` | Returns null when API is unreachable (no cached data) |
-| 4 | `getCurrentWeather_returnsCachedOnSubsequentFailure` | Returns null after cache cleared and API fails |
+| 4 | `getCurrentWeather_returnsNullWhenCacheClearedAndApiFails` | Returns null after cache cleared and API fails |
+
+### WeatherControllerTest (1 test)
+
+| # | Test | Verifies |
+|---|---|---|
+| 1 | `getCurrentWeather_returnsWeatherDataOrNoContent` | `GET /api/weather` returns 200 with temperature/wind or 204 when unavailable |
 
 ## Frontend
 
@@ -68,5 +74,5 @@ No automated tests yet. Frontend is verified via `npx tsc --noEmit` (type check)
 |---|---|---|
 | Backend | Unit (Mockito) | 15 |
 | Backend | Context load | 1 |
-| Backend | Integration (MockMvc) | 9 |
-| **Total** | | **25** |
+| Backend | Integration (MockMvc) | 10 |
+| **Total** | | **26** |
