@@ -16,6 +16,10 @@ Raw findings from manual testing. Resolved issues get moved to PROBLEMS.md with 
 [x] Suggest a nicer color scheme for tables.  
 [x] Add a favicon. Something funny related to food.  
 [x] As the tables open in a modal, there is not so much use for the "selected" state as there is for the "hover". Leave the selected, but add also hover.
+[x] Add round corners to Cancel reservation button in the modal
+[x] Remove seconds from reservation modal time  
+
+## Data
 
 
 ## Search / recommendations

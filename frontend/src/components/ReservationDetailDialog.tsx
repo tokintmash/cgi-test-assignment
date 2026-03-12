@@ -56,7 +56,7 @@ export function ReservationDetailDialog({
               Guest: <strong>{tableStatus.guestName}</strong>
             </p>
             <p>
-              Time: {tableStatus.reservationStart} – {tableStatus.reservationEnd}
+              Time: {tableStatus.reservationStart?.slice(0, 5)} – {tableStatus.reservationEnd?.slice(0, 5)}
             </p>
             <p className="dialog-features">
               {table.features.length > 0
