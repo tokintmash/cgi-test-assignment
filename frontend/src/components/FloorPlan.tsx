@@ -178,11 +178,14 @@ export function FloorPlan({
           {/* Walls */}
           <g className="walls">
             {/* Vertical wall between Main Hall and Private */}
-            <line x1={500} y1={-10} x2={500} y2={310} stroke="white" strokeWidth={3} />
+            <line x1={500} y1={-30} x2={500} y2={310} stroke="#949494" strokeWidth={4} />
             {/* Horizontal walls separating Private tables */}
-            <line x1={576} y1={103} x2={700} y2={103} stroke="white" strokeWidth={3} />
-            <line x1={576} y1={201} x2={700} y2={201} stroke="white" strokeWidth={3} />
-            <line x1={576} y1={310} x2={700} y2={310} stroke="white" strokeWidth={3} />
+            <line x1={576} y1={103} x2={700} y2={103} stroke="#949494" strokeWidth={4} />
+            <line x1={576} y1={201} x2={700} y2={201} stroke="#949494" strokeWidth={4} />
+            <line x1={576} y1={310} x2={700} y2={310} stroke="#949494" strokeWidth={4} />
+            {/* Horizontal walls separating Terrace and the rest HUMAN */}
+            <line x1={0} y1={450} x2={150} y2={450} stroke="#949494" strokeWidth={4} />
+            <line x1={240} y1={450} x2={700} y2={450} stroke="#949494" strokeWidth={4} />
             {/* Window (top wall, glass) HUMAN */}
             <line x1={250} y1={-20} x2={400} y2={-20} stroke="#7EC8E3" strokeWidth={3} />
             {/* Window (left wall, glass) */}
