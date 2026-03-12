@@ -12,7 +12,7 @@ public record SearchRequest(
         @NotNull LocalDate date,
         @NotNull LocalTime startTime,
         @Min(1) int partySize,
-        int duration,
+        @Min(30) int duration,
         String zone,
         Set<TableFeature> preferences
 ) {

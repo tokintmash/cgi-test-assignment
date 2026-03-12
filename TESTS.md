@@ -6,7 +6,7 @@ Run all backend tests: `cd backend && ./mvnw test`
 
 ## Backend — Unit Tests
 
-### RecommendationServiceTest (11 tests)
+### RecommendationServiceTest (16 tests)
 
 | # | Test | Verifies |
 |---|---|---|
@@ -20,7 +20,12 @@ Run all backend tests: `cd backend && ./mvnw test`
 | 8 | `multipleTablesRankedByScore` | Results are sorted by descending score |
 | 9 | `terraceTable_excludedInColdWeather` | Terrace tables excluded at 3°C (penalty -1.0), only indoor tables returned |
 | 10 | `terraceTable_noPenaltyInWarmWeather` | Terrace tables get 0.0 weather penalty at 22°C |
-| 11 | `weatherUnavailable_noPenaltyApplied` | Null weather → no penalty, null weather/warning in response |
+| 11 | `combination_foundWhenNoSingleTableFits` | Two adjacent same-zone tables combine when no single table fits the party |
+| 12 | `combination_excludedWhenTablesNotAdjacent` | Tables farther than 60px apart are not combined |
+| 13 | `combination_excludedWhenTablesInDifferentZones` | Cross-zone table pairs are not combined |
+| 14 | `combination_terracePairExcludedInColdWeather` | Terrace combinations filtered out at ≤5°C |
+| 15 | `combination_inheritsWorstWeatherPenalty` | Terrace combination gets 0.0 penalty in warm weather |
+| 16 | `weatherUnavailable_noPenaltyApplied` | Null weather → no penalty, null weather/warning in response |
 
 ### RestaurantReservationApplicationTests (1 test)
 
@@ -56,7 +61,13 @@ Run all backend tests: `cd backend && ./mvnw test`
 | 1 | `parseWeatherJson_extractsTemperatureAndWind` | Correctly parses Open-Meteo JSON response |
 | 2 | `getCurrentWeather_cachesResult` | Second call uses cache, no additional HTTP call |
 | 3 | `getCurrentWeather_returnsNullOnFailure` | Returns null when API is unreachable (no cached data) |
-| 4 | `getCurrentWeather_returnsCachedOnSubsequentFailure` | Returns null after cache cleared and API fails |
+| 4 | `getCurrentWeather_returnsNullWhenCacheClearedAndApiFails` | Returns null after cache cleared and API fails |
+
+### WeatherControllerTest (1 test)
+
+| # | Test | Verifies |
+|---|---|---|
+| 1 | `getCurrentWeather_returnsWeatherDataOrNoContent` | `GET /api/weather` returns 200 with temperature/wind or 204 when unavailable |
 
 ## Frontend
 
@@ -66,7 +77,7 @@ No automated tests yet. Frontend is verified via `npx tsc --noEmit` (type check)
 
 | Layer | Type | Count |
 |---|---|---|
-| Backend | Unit (Mockito) | 15 |
+| Backend | Unit (Mockito) | 20 |
 | Backend | Context load | 1 |
-| Backend | Integration (MockMvc) | 9 |
-| **Total** | | **25** |
+| Backend | Integration (MockMvc) | 10 |
+| **Total** | | **31** |
