@@ -103,6 +103,7 @@ function App() {
   const [resetResult, setResetResult] = useState<string | null>(null)
 
   const [visibleRecommendedIds, setVisibleRecommendedIds] = useState<Set<number>>(new Set())
+  const [hoveredTableIds, setHoveredTableIds] = useState<Set<number>>(new Set())
 
   const zones = useMemo(() => Array.from(new Set(tables.map((table) => table.zone))).filter((zone) => zone !== 'Window').sort(), [tables])
 
@@ -342,6 +343,7 @@ function App() {
             tables={tables}
             statusByTableId={statusByTableId}
             recommendedIds={floorPlanHighlightIds}
+            hoveredTableIds={hoveredTableIds}
             selectedTableId={selectedTableId}
             selectedCombination={selectedCombination}
             isLoading={searchLoading || tablesLoading}
@@ -362,6 +364,7 @@ function App() {
             onBookCombination={openCombinationBooking}
             onSelectCombination={setSelectedCombination}
             onVisibleIdsChange={setVisibleRecommendedIds}
+            onHover={setHoveredTableIds}
           />
         </div>
       </main>

@@ -1,7 +1,7 @@
 import type { KeyboardEvent } from 'react'
 import type { RestaurantTable } from '../types'
 
-export type TableVisualState = 'default' | 'available' | 'reserved' | 'recommended' | 'selected'
+export type TableVisualState = 'default' | 'available' | 'reserved' | 'recommended' | 'selected' | 'hovered'
 
 interface TableShapeProps {
   table: RestaurantTable

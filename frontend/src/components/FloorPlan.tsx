@@ -8,6 +8,7 @@ interface FloorPlanProps {
   tables: RestaurantTable[]
   statusByTableId: Record<number, TableAvailability>
   recommendedIds: Set<number>
+  hoveredTableIds: Set<number>
   selectedTableId: number | null
   selectedCombination: TableCombination | null
   isLoading: boolean
@@ -25,6 +26,7 @@ function toVisualState(
   tableId: number,
   statusByTableId: Record<number, TableAvailability>,
   recommendedIds: Set<number>,
+  hoveredTableIds: Set<number>,
   selectedTableId: number | null,
   selectedCombination: TableCombination | null,
 ): TableVisualState {
@@ -34,6 +36,10 @@ function toVisualState(
 
   if (selectedCombination && (selectedCombination.tableId1 === tableId || selectedCombination.tableId2 === tableId)) {
     return 'selected'
+  }
+
+  if (hoveredTableIds.has(tableId)) {
+    return 'hovered'
   }
 
   const status = statusByTableId[tableId]
@@ -56,6 +62,8 @@ function statusLabelForState(state: TableVisualState): string {
   switch (state) {
     case 'selected':
       return 'Selected'
+    case 'hovered':
+      return 'Recommended'
     case 'reserved':
       return 'Reserved'
     case 'recommended':
@@ -71,6 +79,7 @@ export function FloorPlan({
   tables,
   statusByTableId,
   recommendedIds,
+  hoveredTableIds,
   selectedTableId,
   selectedCombination,
   isLoading,
@@ -118,7 +127,7 @@ export function FloorPlan({
 
   const tooltipTable = tooltip ? tableById.get(tooltip.tableId) : null
   const tooltipState = tooltipTable
-    ? toVisualState(tooltipTable.id, statusByTableId, recommendedIds, selectedTableId, selectedCombination)
+    ? toVisualState(tooltipTable.id, statusByTableId, recommendedIds, hoveredTableIds, selectedTableId, selectedCombination)
     : null
 
   return (
@@ -186,7 +195,7 @@ export function FloorPlan({
           </g>
 
           {tables.map((table) => {
-            const visualState = toVisualState(table.id, statusByTableId, recommendedIds, selectedTableId, selectedCombination)
+            const visualState = toVisualState(table.id, statusByTableId, recommendedIds, hoveredTableIds, selectedTableId, selectedCombination)
             const selectable = statusByTableId[table.id] !== 'reserved' && statusByTableId[table.id] !== undefined
 
             return (

@@ -130,6 +130,13 @@
   animation: recommended-pulse 1.6s ease-in-out infinite;
 }
 
+.table-hovered rect,
+.table-hovered circle {
+  fill: #93c5fd;
+  transform: scale(1.08);
+  filter: brightness(1.15) drop-shadow(0 0 10px rgba(96, 165, 250, 0.45));
+}
+
 .table-selected rect,
 .table-selected circle {
   fill: var(--color-selected);

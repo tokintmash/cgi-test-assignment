@@ -14,6 +14,7 @@ interface RecommendationPanelProps {
   onBookCombination: (combination: TableCombination) => void
   onSelectCombination: (combination: TableCombination | null) => void
   onVisibleIdsChange: (ids: Set<number>) => void
+  onHover: (ids: Set<number>) => void
 }
 
 export function RecommendationPanel({
@@ -28,9 +29,11 @@ export function RecommendationPanel({
   onBookCombination,
   onSelectCombination,
   onVisibleIdsChange,
+  onHover,
 }: RecommendationPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const visibleRef = useRef<Set<number>>(new Set())
+  const emptySet = useRef(new Set<number>()).current
 
   const observerCallback = useCallback((entries: IntersectionObserverEntry[]) => {
     let changed = false
@@ -91,6 +94,8 @@ export function RecommendationPanel({
                   key={recommendation.tableId}
                   data-table-id={recommendation.tableId}
                   className={isSelected ? 'recommendation-item selected' : 'recommendation-item'}
+                  onMouseEnter={() => onHover(new Set([recommendation.tableId]))}
+                  onMouseLeave={() => onHover(emptySet)}
                 >
                   <button
                     type="button"
@@ -121,7 +126,12 @@ export function RecommendationPanel({
               {combinations.map((combo) => {
                 const isSelected = selectedCombination?.tableId1 === combo.tableId1 && selectedCombination?.tableId2 === combo.tableId2
                 return (
-                  <li key={`${combo.tableId1}-${combo.tableId2}`} className={isSelected ? 'recommendation-item combination-item selected' : 'recommendation-item combination-item'}>
+                  <li
+                    key={`${combo.tableId1}-${combo.tableId2}`}
+                    className={isSelected ? 'recommendation-item combination-item selected' : 'recommendation-item combination-item'}
+                    onMouseEnter={() => onHover(new Set([combo.tableId1, combo.tableId2]))}
+                    onMouseLeave={() => onHover(emptySet)}
+                  >
                     <button
                       type="button"
                       className="recommendation-summary"
