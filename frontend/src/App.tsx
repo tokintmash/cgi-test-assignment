@@ -400,7 +400,14 @@ function App() {
             </button>
           </div>
         </div>
-        {weatherWarning && <p className="status-banner weather-warning">{weatherWarning}</p>}
+        <p className={`status-banner weather-info${weatherWarning ? ' weather-warning' : ''}`}>
+          {weatherWarning
+            ? weatherWarning
+            : weather
+              // ? `Temperature ${Math.round(weather.temperatureC)}°C · wind ${Math.round(weather.windSpeedKmh / 3.6)} m/s`
+              ? `Weather is nice.`
+              : '\u00A0'}
+        </p>
       </header>
 
       <SearchForm
