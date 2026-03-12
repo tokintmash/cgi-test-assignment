@@ -72,12 +72,13 @@
 
 ### Phase 4: Integration & Polish (`fix/integration-polish`)
 - [ ] End-to-end flow testing
-- [ ] Bug fixes from integration
+- [x] Bug fixes from integration
 - [x] "Reset reservations" button in UI (done in Phase 3)
 - [x] Table hover tooltips (capacity, features, status)
 - [x] Visual polish (transitions, hover effects, color palette)
 - [x] Edge cases (no results, past dates, large party)
 - [x] Backend integration tests (MockMvc)
+- [x] Fixed layout height (floor plan + recommendations locked at 740px, right pane scrolls)
 
 ### Phase 5: Docker (`feat/docker`)
 - [ ] Backend `Dockerfile` (multi-stage build)

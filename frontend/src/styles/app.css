@@ -73,16 +73,23 @@
   display: grid;
   gap: 16px;
   grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr);
-  grid-template-rows: minmax(520px, auto);
-  align-items: stretch;
+  grid-template-rows: 740px;
 }
 
-.left-column,
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .right-column {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .card-panel {

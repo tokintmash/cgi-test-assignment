@@ -123,7 +123,7 @@ function App() {
   const selectedTable = selectedTableId !== null ? tableById.get(selectedTableId) ?? null : null
 
   // Floor plan only highlights tables visible in the scrollable recommendation list
-  const floorPlanHighlightIds = visibleRecommendedIds.size > 0 ? visibleRecommendedIds : recommendedIds
+  const floorPlanHighlightIds = hasSearched ? visibleRecommendedIds : recommendedIds
 
   useEffect(() => {
     let mounted = true
