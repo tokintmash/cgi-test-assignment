@@ -17,6 +17,9 @@ Raw findings from manual testing. Resolved issues get moved to PROBLEMS.md with 
 [x] As the tables open in a modal, there is not so much use for the "selected" state as there is for the "hover". Leave the selected, but add also hover.
 
 ## Search / recommendations
+[x] For 1-2 people party should not be recommended tables larger than 4 seats
+[x] For 3-4 people party should not be recommended tables larger than 6 seats
+[] Currenlty, a reserved table cannot be clicked, making cancelling reservation impossible. Make it open in a modal and add functionality for cancelling a resevation.  
 [x] "No matches" should appear if there are no results at all. It should no appear if there are combinations available  
 [x] Currenlty the recommandations are limited to 5. Change it so that there is no numerical limit for the recommendations (without changing the matching logic). For this, add scroll to the right pane, but only show in the floor plan those that are visible in the right pane.  
 [x] Remove the combinations-subtitle

@@ -44,8 +44,11 @@ public class RecommendationService {
                 .map(table -> toTableStatus(table, request, endTime, reservationsOnDate))
                 .toList();
 
+        int maxCapacity = maxCapacityForParty(request.partySize());
+
         var recommendations = allTables.stream()
                 .filter(table -> table.getCapacity() >= request.partySize())
+                .filter(table -> table.getCapacity() <= maxCapacity)
                 .filter(table -> isAvailable(table, request, endTime, reservationsOnDate))
                 .filter(table -> hasAllPreferences(table, request.preferences()))
                 .filter(table -> matchesZone(table, request.zone()))
@@ -156,6 +159,12 @@ public class RecommendationService {
         return requestedZone.equalsIgnoreCase(tableZone) ? 1.0 : 0.5;
     }
 
+    static int maxCapacityForParty(int partySize) {
+        if (partySize <= 2) return 4;
+        if (partySize <= 4) return 6;
+        return Integer.MAX_VALUE;
+    }
+
     private List<TableCombination> findCombinations(List<RestaurantTable> availableTables, SearchRequest request) {
         var results = new ArrayList<TableCombination>();
 
@@ -170,6 +179,9 @@ public class RecommendationService {
 
                 int combined = t1.getCapacity() + t2.getCapacity();
                 if (combined < request.partySize()) {
+                    continue;
+                }
+                if (combined > maxCapacityForParty(request.partySize())) {
                     continue;
                 }
 

@@ -6,17 +6,18 @@ Run all backend tests: `cd backend && ./mvnw test`
 
 ## Backend — Unit Tests
 
-### RecommendationServiceTest (7 tests)
+### RecommendationServiceTest (8 tests)
 
 | # | Test | Verifies |
 |---|---|---|
 | 1 | `perfectMatch_scoresHighest` | Exact capacity + all preferences + correct zone scores ~0.91 |
 | 2 | `partialMatch_isExcluded` | Tables missing a requested preference are excluded entirely |
 | 3 | `noPreferences_defaultsToFullPreferenceScore` | Empty preference set gives full preference score (1.0) |
-| 4 | `oversizedTable_getsLowerEfficiency` | Table much larger than party size gets lower efficiency score |
-| 5 | `noResults_whenAllTablesTooSmall` | Returns empty list when no table fits the party |
-| 6 | `reservedTables_areExcludedFromRecommendations` | Reserved tables do not appear in recommendations |
-| 7 | `multipleTablesRankedByScore` | Results are sorted by descending score |
+| 4 | `oversizedTable_getsLowerEfficiency` | Table within cap but larger than party gets lower efficiency |
+| 5 | `smallParty_excludesOversizedTables` | Party of 1-2 capped at 4 seats, party of 3-4 capped at 6, 5+ uncapped |
+| 6 | `noResults_whenAllTablesTooSmall` | Returns empty list when no table fits the party |
+| 7 | `reservedTables_areExcludedFromRecommendations` | Reserved tables do not appear in recommendations |
+| 8 | `multipleTablesRankedByScore` | Results are sorted by descending score |
 
 ### RestaurantReservationApplicationTests (1 test)
 
@@ -53,7 +54,7 @@ No automated tests yet. Frontend is verified via `npx tsc --noEmit` (type check)
 
 | Layer | Type | Count |
 |---|---|---|
-| Backend | Unit (Mockito) | 7 |
+| Backend | Unit (Mockito) | 8 |
 | Backend | Context load | 1 |
 | Backend | Integration (MockMvc) | 9 |
-| **Total** | | **17** |
+| **Total** | | **18** |
