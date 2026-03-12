@@ -19,19 +19,25 @@ import java.util.stream.Collectors;
 @Service
 public class RecommendationService {
 
-    private static final double WEIGHT_EFFICIENCY = 0.40;
-    private static final double WEIGHT_PREFERENCE = 0.35;
-    private static final double WEIGHT_ZONE = 0.15;
-    private static final double WEIGHT_BASE = 0.10;
+    private static final double WEIGHT_EFFICIENCY = 0.35;
+    private static final double WEIGHT_PREFERENCE = 0.30;
+    private static final double WEIGHT_ZONE = 0.10;
+    private static final double WEIGHT_WEATHER = 0.20;
+    private static final double WEIGHT_BASE = 0.05;
     private static final double BASE_SCORE = 0.1;
+
+    private static final String TERRACE_ZONE = "Terrace";
 
     private final TableRepository tableRepository;
     private final ReservationRepository reservationRepository;
+    private final WeatherService weatherService;
 
     public RecommendationService(TableRepository tableRepository,
-                                  ReservationRepository reservationRepository) {
+                                  ReservationRepository reservationRepository,
+                                  WeatherService weatherService) {
         this.tableRepository = tableRepository;
         this.reservationRepository = reservationRepository;
+        this.weatherService = weatherService;
     }
 
     public SearchResponse search(SearchRequest request) {
@@ -39,6 +45,8 @@ public class RecommendationService {
         var endTime = request.startTime().plusMinutes(request.duration());
 
         var reservationsOnDate = reservationRepository.findByDate(request.date());
+
+        var weather = weatherService.getCurrentWeather();
 
         var allTableStatuses = allTables.stream()
                 .map(table -> toTableStatus(table, request, endTime, reservationsOnDate))
@@ -52,7 +60,8 @@ public class RecommendationService {
                 .filter(table -> isAvailable(table, request, endTime, reservationsOnDate))
                 .filter(table -> hasAllPreferences(table, request.preferences()))
                 .filter(table -> matchesZone(table, request.zone()))
-                .map(table -> toRecommendation(table, request))
+                .filter(table -> calculateWeatherPenalty(table.getZone(), weather) > -1.0)
+                .map(table -> toRecommendation(table, request, weather))
                 .sorted(Comparator.comparingDouble(TableRecommendation::score).reversed())
                 .toList();
 
@@ -64,12 +73,30 @@ public class RecommendationService {
                     .filter(table -> isAvailable(table, request, endTime, reservationsOnDate))
                     .filter(table -> matchesZone(table, request.zone()))
                     .toList();
-            combinations = findCombinations(availableTables, request);
+            combinations = findCombinations(availableTables, request, weather);
         } else {
             combinations = List.of();
         }
 
-        return new SearchResponse(recommendations, combinations, allTableStatuses);
+        String weatherWarning = buildWeatherWarning(request.zone(), weather);
+
+        return new SearchResponse(recommendations, combinations, allTableStatuses, weather, weatherWarning);
+    }
+
+    private String buildWeatherWarning(String zone, WeatherData weather) {
+        if (weather == null) {
+            return null;
+        }
+        double penalty = calculateWeatherPenalty(TERRACE_ZONE, weather);
+        if (penalty >= 0.0) {
+            return null;
+        }
+        // Show warning when Terrace zone is selected or no zone filter (all zones shown)
+        if (zone != null && !zone.isBlank() && !TERRACE_ZONE.equalsIgnoreCase(zone)) {
+            return null;
+        }
+        return String.format("Outdoor seating may be uncomfortable — temperature %.0f°C, wind %.0f m/s",
+                weather.temperatureC(), weather.windSpeedKmh() / 3.6);
     }
 
     private boolean isAvailable(RestaurantTable table, SearchRequest request,
@@ -103,11 +130,12 @@ public class RecommendationService {
         );
     }
 
-    TableRecommendation toRecommendation(RestaurantTable table, SearchRequest request) {
-        var breakdown = calculateScore(table, request);
+    TableRecommendation toRecommendation(RestaurantTable table, SearchRequest request, WeatherData weather) {
+        var breakdown = calculateScore(table, request, weather);
         double totalScore = (breakdown.efficiency() * WEIGHT_EFFICIENCY)
                 + (breakdown.preferenceMatch() * WEIGHT_PREFERENCE)
                 + (breakdown.zoneMatch() * WEIGHT_ZONE)
+                + (breakdown.weatherPenalty() * WEIGHT_WEATHER)
                 + (breakdown.base() * WEIGHT_BASE);
 
         return new TableRecommendation(
@@ -126,11 +154,34 @@ public class RecommendationService {
         );
     }
 
-    ScoreBreakdown calculateScore(RestaurantTable table, SearchRequest request) {
+    ScoreBreakdown calculateScore(RestaurantTable table, SearchRequest request, WeatherData weather) {
         double efficiency = calculateEfficiency(table.getCapacity(), request.partySize());
         double preferenceMatch = calculatePreferenceMatch(table.getFeatures(), request.preferences());
         double zoneMatch = calculateZoneMatch(table.getZone(), request.zone());
-        return new ScoreBreakdown(efficiency, preferenceMatch, zoneMatch, BASE_SCORE);
+        double weatherPenalty = calculateWeatherPenalty(table.getZone(), weather);
+        return new ScoreBreakdown(efficiency, preferenceMatch, zoneMatch, weatherPenalty, BASE_SCORE);
+    }
+
+    double calculateWeatherPenalty(String zone, WeatherData weather) {
+        if (weather == null || !TERRACE_ZONE.equalsIgnoreCase(zone)) {
+            return 0.0;
+        }
+
+        double tempPenalty = 0.0;
+        if (weather.temperatureC() <= 5.0) {
+            tempPenalty = -1.0;
+        } else if (weather.temperatureC() < 15.0) {
+            tempPenalty = -(15.0 - weather.temperatureC()) / 10.0;
+        }
+
+        double windPenalty = 0.0;
+        if (weather.windSpeedKmh() >= 40.0) {
+            windPenalty = -1.0;
+        } else if (weather.windSpeedKmh() > 20.0) {
+            windPenalty = -(weather.windSpeedKmh() - 20.0) / 20.0;
+        }
+
+        return Math.min(tempPenalty, windPenalty);
     }
 
     private double calculateEfficiency(int capacity, int partySize) {
@@ -175,7 +226,9 @@ public class RecommendationService {
         return Integer.MAX_VALUE;
     }
 
-    private List<TableCombination> findCombinations(List<RestaurantTable> availableTables, SearchRequest request) {
+    private List<TableCombination> findCombinations(List<RestaurantTable> availableTables,
+                                                     SearchRequest request,
+                                                     WeatherData weather) {
         var results = new ArrayList<TableCombination>();
 
         for (int i = 0; i < availableTables.size(); i++) {
@@ -203,10 +256,11 @@ public class RecommendationService {
                 combinedFeatures.addAll(t2.getFeatures());
                 combinedFeatures.remove(TableFeature.PRIVATE); // safety
 
-                var breakdown = calculateCombinationScore(t1, t2, request);
+                var breakdown = calculateCombinationScore(t1, t2, request, weather);
                 double totalScore = (breakdown.efficiency() * WEIGHT_EFFICIENCY)
                         + (breakdown.preferenceMatch() * WEIGHT_PREFERENCE)
                         + (breakdown.zoneMatch() * WEIGHT_ZONE)
+                        + (breakdown.weatherPenalty() * WEIGHT_WEATHER)
                         + (breakdown.base() * WEIGHT_BASE);
 
                 results.add(new TableCombination(
@@ -239,7 +293,8 @@ public class RecommendationService {
         return Math.sqrt(dx * dx + dy * dy) <= maxGap;
     }
 
-    private ScoreBreakdown calculateCombinationScore(RestaurantTable t1, RestaurantTable t2, SearchRequest request) {
+    private ScoreBreakdown calculateCombinationScore(RestaurantTable t1, RestaurantTable t2,
+                                                      SearchRequest request, WeatherData weather) {
         int combined = t1.getCapacity() + t2.getCapacity();
         double efficiency = calculateEfficiency(combined, request.partySize());
 
@@ -248,6 +303,12 @@ public class RecommendationService {
         double preferenceMatch = calculatePreferenceMatch(combinedFeatures, request.preferences());
 
         double zoneMatch = calculateZoneMatch(t1.getZone(), request.zone());
-        return new ScoreBreakdown(efficiency, preferenceMatch, zoneMatch, BASE_SCORE);
+
+        // Combinations inherit the worst weather penalty of the two tables
+        double wp1 = calculateWeatherPenalty(t1.getZone(), weather);
+        double wp2 = calculateWeatherPenalty(t2.getZone(), weather);
+        double weatherPenalty = Math.min(wp1, wp2);
+
+        return new ScoreBreakdown(efficiency, preferenceMatch, zoneMatch, weatherPenalty, BASE_SCORE);
     }
 }

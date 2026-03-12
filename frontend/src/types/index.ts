@@ -15,10 +15,16 @@ export interface RestaurantTable {
   features: TableFeature[]
 }
 
+export interface WeatherData {
+  temperatureC: number
+  windSpeedKmh: number
+}
+
 export interface ScoreBreakdown {
   efficiency: number
   preferenceMatch: number
   zoneMatch: number
+  weatherPenalty: number
   base: number
 }
 
@@ -85,6 +91,8 @@ export interface SearchResponse {
   recommendations: TableRecommendation[]
   combinations: TableCombination[]
   allTables: TableStatus[]
+  weather: WeatherData | null
+  weatherWarning: string | null
 }
 
 export interface ReservationRequest {

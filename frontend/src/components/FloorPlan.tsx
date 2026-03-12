@@ -185,7 +185,7 @@ export function FloorPlan({
             <line x1={576} y1={310} x2={700} y2={310} stroke="#949494" strokeWidth={4} />
             {/* Horizontal walls separating Terrace and the rest HUMAN */}
             <line x1={0} y1={450} x2={150} y2={450} stroke="#949494" strokeWidth={4} />
-            <line x1={240} y1={450} x2={700} y2={450} stroke="#949494" strokeWidth={4} />
+            <line x1={240} y1={450} x2={610} y2={450} stroke="#949494" strokeWidth={4} />
             {/* Window (top wall, glass) HUMAN */}
             <line x1={250} y1={-20} x2={400} y2={-20} stroke="#7EC8E3" strokeWidth={3} />
             {/* Window (left wall, glass) */}

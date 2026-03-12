@@ -13,6 +13,7 @@ import type {
   TableRecommendation,
   TableCombination,
   RestaurantTable,
+  WeatherData,
 } from './types'
 import './styles/app.css'
 
@@ -121,6 +122,9 @@ function App() {
   const [visibleRecommendedIds, setVisibleRecommendedIds] = useState<Set<number>>(new Set())
   const [hoveredTableIds, setHoveredTableIds] = useState<Set<number>>(new Set())
 
+  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const [weatherWarning, setWeatherWarning] = useState<string | null>(null)
+
   const zones = useMemo(() => Array.from(new Set(tables.map((table) => table.zone))).filter((zone) => zone !== 'Window').sort(), [tables])
 
   const recommendedIds = useMemo(
@@ -169,6 +173,19 @@ function App() {
 
     void fetchTables()
 
+    const fetchWeather = async () => {
+      try {
+        const data = await reservationApi.getWeather()
+        if (mounted) {
+          setWeather(data)
+        }
+      } catch {
+        // Weather is optional — hide badge on failure
+      }
+    }
+
+    void fetchWeather()
+
     return () => {
       mounted = false
     }
@@ -185,6 +202,10 @@ function App() {
       setStatusByTableId(toStatusMap(response.allTables))
       setTableStatusMap(toTableStatusMap(response.allTables))
       setHasSearched(true)
+      if (response.weather) {
+        setWeather(response.weather)
+      }
+      setWeatherWarning(response.weatherWarning ?? null)
 
       setSelectedTableId((current) => {
         if (current === null) {
@@ -364,15 +385,29 @@ function App() {
             <p className="eyebrow">Smart reservation</p>
             <h1>Restaurant table recommender</h1>
           </div>
-          <button
-            className="btn-reset"
-            disabled={resetting}
-            onClick={handleResetClick}
-          >
-            Reset reservations
-          </button>
+          <div className="header-actions">
+            {weather && (
+              <span className="weather-badge">
+                {Math.round(weather.temperatureC)}°C · {Math.round(weather.windSpeedKmh / 3.6)} m/s
+              </span>
+            )}
+            <button
+              className="btn-reset"
+              disabled={resetting}
+              onClick={handleResetClick}
+            >
+              Reset reservations
+            </button>
+          </div>
         </div>
-        <p>Search by party, time, and preferences, then click a table on the map or in the ranking to book.</p>
+        <p className={`status-banner weather-info${weatherWarning ? ' weather-warning' : ''}`}>
+          {weatherWarning
+            ? weatherWarning
+            : weather
+              // ? `Temperature ${Math.round(weather.temperatureC)}°C · wind ${Math.round(weather.windSpeedKmh / 3.6)} m/s`
+              ? `Weather is nice.`
+              : '\u00A0'}
+        </p>
       </header>
 
       <SearchForm

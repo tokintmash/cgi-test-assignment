@@ -94,11 +94,12 @@ The SVG floor plan includes static architectural features rendered as lines:
       "zone": "Window",
       "capacity": 4,
       "features": ["WINDOW", "ACCESSIBLE"],
-      "score": 0.92,
+      "score": 0.75,
       "scoreBreakdown": {
         "efficiency": 1.0,
         "preferenceMatch": 1.0,
         "zoneMatch": 1.0,
+        "weatherPenalty": 0.0,
         "base": 0.1
       },
       "posX": 50,
@@ -117,7 +118,9 @@ The SVG floor plan includes static architectural features rendered as lines:
       "status": "available",
       "features": ["WINDOW"]
     }
-  ]
+  ],
+  "weather": { "temperatureC": 7.5, "windSpeedKmh": 20.5 },
+  "weatherWarning": "Outdoor seating may be uncomfortable — temperature 8°C, wind 6 m/s"
 }
 ```
 
@@ -148,20 +151,28 @@ Returns all tables with their current reservation status for today. Used for ini
 ## Recommendation Scoring Algorithm
 
 ```
-totalScore = (efficiency × 0.40) + (preferenceMatch × 0.35) + (zoneMatch × 0.15) + (base × 0.10)
+totalScore = (efficiency × 0.35) + (preferenceMatch × 0.30) + (zoneMatch × 0.10) + (weatherPenalty × 0.20) + (base × 0.05)
 ```
 
 | Factor | Calculation | Weight |
 |---|---|---|
-| Efficiency | `1.0 - ((capacity - partySize) / capacity)`, floor at 0.3 | 40% |
-| Preference match | `matchedPreferences / requestedPreferences`, or 1.0 if none requested | 35% |
-| Zone match | 1.0 if zone matches or no zone requested, 0.5 otherwise | 15% |
-| Base | Always 0.1 — ensures every valid table gets a nonzero score | 10% |
+| Efficiency | `1.0 - ((capacity - partySize) / capacity)`, floor at 0.3 | 35% |
+| Preference match | `matchedPreferences / requestedPreferences`, or 1.0 if none requested | 30% |
+| Zone match | 1.0 if zone matches or no zone requested, 0.5 otherwise | 10% |
+| Weather penalty | 0.0 for non-Terrace or warm weather; linear from 0.0 (≥15°C) to -1.0 (≤5°C); also penalizes wind >20 km/h | 20% |
+| Base | Always 0.1 — ensures every valid table gets a nonzero score | 5% |
 
 Tables are excluded from results if:
 - `capacity < partySize`
 - The table does not have **all** requested preferences
 - A zone is selected and the table is not in that zone
+- Weather penalty reaches -1.0 (Terrace tables at ≤5°C or wind ≥40 km/h)
+
+### Weather Integration
+
+Real-time weather is fetched from the Open-Meteo API (Tallinn coordinates, no API key required). The `WeatherService` caches data for 10 minutes with a 5-second HTTP timeout. On failure, stale cached data is returned; if no cached data exists, weather is treated as unavailable and no penalty is applied.
+
+The frontend displays weather in the header as a pill badge and shows an amber warning banner inside the header when terrace conditions are poor.
 
 ## Technology Choice Rationale
 

@@ -5,6 +5,7 @@ import type {
   RestaurantTable,
   SearchRequest,
   SearchResponse,
+  WeatherData,
 } from '../types'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
@@ -82,4 +83,7 @@ export const reservationApi = {
     fetchJson<ResetReservationsResponse>('/api/reservations/reset', {
       method: 'POST',
     }),
+
+  getWeather: () =>
+    fetchJson<WeatherData>('/api/weather', { method: 'GET' }),
 }
