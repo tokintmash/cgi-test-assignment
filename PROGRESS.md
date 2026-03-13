@@ -10,7 +10,7 @@
 | 3 | Frontend (search, floor plan, booking) | `feat/frontend-ui` | ✅ Done | Phase 2 |
 | 4 | Integration, polish & testing | `fix/integration-polish` | ⬜ Not started | Phase 3 |
 | 4.5 | Weather-aware recommendations | `feat/weather-widget` | ✅ Done | Phase 4 |
-| 5 | Docker | `feat/docker` | ⬜ Not started | Phase 4.5 |
+| 5 | Docker | `feat/docker` | ✅ Done | Phase 4.5 |
 | 6 | Documentation & submission | `docs/final` | ⬜ Not started | Phase 5 |
 
 ## Status Key
@@ -95,10 +95,11 @@
 - [x] Update TESTS.md, AI-USAGE.md
 
 ### Phase 5: Docker (`feat/docker`)
-- [ ] Backend `Dockerfile` (multi-stage build)
-- [ ] Frontend `Dockerfile` (build + nginx)
-- [ ] `docker-compose.yml` (single command startup)
-- [ ] Verify full stack starts from `docker-compose up`
+- [x] Backend `Dockerfile` (multi-stage build: JDK 21 build → JRE 21 run)
+- [x] Frontend `Dockerfile` (Node 22 build → nginx serve)
+- [x] Frontend `nginx.conf` (SPA routing + `/api/` reverse proxy to backend)
+- [x] `docker-compose.yml` (single command startup)
+- [x] Verify full stack starts from `docker-compose up`
 
 ### Phase 6: Documentation & Submission (`docs/final`)
 - [ ] README finalized with screenshots
