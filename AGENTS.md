@@ -4,7 +4,7 @@
 
 Smart restaurant reservation system with an interactive SVG floor plan and recommendation engine.
 
-- **Backend:** Spring Boot 3.x, Java 21, Maven, H2 in-memory database
+- **Backend:** Spring Boot 3.x, Java 25, Maven, H2 in-memory database
 - **Frontend:** React 19, TypeScript, Vite, plain CSS
 - **Floor plan:** Raw SVG (no external libraries)
 
@@ -20,7 +20,7 @@ docs/             Screenshots and supplementary documentation
 
 ### Java (Backend)
 
-- Java 21 — use records for DTOs, use `var` where type is obvious
+- Java 25 — use records for DTOs, use `var` where type is obvious
 - Spring Boot 3.x conventions: constructor injection (no `@Autowired` on fields), `@RestController`, `@Service`, `@Repository`
 - Entity class naming: `RestaurantTable` (not `Table`) to avoid SQL/Java conflicts
 - Package structure: `com.restaurant.{config,model,dto,repository,service,controller}`

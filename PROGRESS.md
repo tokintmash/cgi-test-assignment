@@ -23,7 +23,7 @@
 ## Phase Details
 
 ### Phase 0: Scaffolding & Documentation ✅
-- [x] Spring Boot project initialized (3.5.0 + Java 21)
+- [x] Spring Boot project initialized (3.5.0 + Java 25)
 - [x] React + TypeScript + Vite initialized
 - [x] README, ARCHITECTURE, ASSUMPTIONS, AI-USAGE, AGENTS, PROBLEMS created
 - [x] .gitignore configured for full stack
@@ -95,7 +95,7 @@
 - [x] Update TESTS.md, AI-USAGE.md
 
 ### Phase 5: Docker (`feat/docker`)
-- [x] Backend `Dockerfile` (multi-stage build: JDK 21 build → JRE 21 run)
+- [x] Backend `Dockerfile` (multi-stage build: JDK 25 build → JRE 25 run)
 - [x] Frontend `Dockerfile` (Node 22 build → nginx serve)
 - [x] Frontend `nginx.conf` (SPA routing + `/api/` reverse proxy to backend)
 - [x] `docker-compose.yml` (single command startup)

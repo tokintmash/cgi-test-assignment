@@ -2,7 +2,7 @@
 
 ## Stack
 
-- Spring Boot 3.5.0, Java 21, Maven (use `./mvnw`), H2 in-memory
+- Spring Boot 3.5.0, Java 25, Maven (use `./mvnw`), H2 in-memory
 - Dependencies: spring-boot-starter-web, spring-boot-starter-data-jpa, h2, spring-boot-starter-validation, spring-boot-devtools
 
 ## Package Structure

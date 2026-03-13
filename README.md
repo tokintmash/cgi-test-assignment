@@ -17,7 +17,7 @@ An intelligent table reservation system with an interactive SVG floor plan and t
 
 ### Prerequisites
 
-- Java 21+
+- Java 25+
 - Node.js 18+
 
 ### Backend
@@ -43,7 +43,7 @@ Open `http://localhost:5173` in your browser.
 
 | Layer | Technology | Rationale |
 |---|---|---|
-| Backend | Spring Boot 3.x + Java 21 | Assignment requirement |
+| Backend | Spring Boot 3.x + Java 25 | Assignment requirement (latest LTS) |
 | Database | H2 (in-memory) | Zero configuration, ideal for demo |
 | Frontend | React 19 + TypeScript | Strong ecosystem, type safety, fast dev with Vite |
 | Floor plan | SVG (no libraries) | Simple, stylable, accessible, no external dependencies |
