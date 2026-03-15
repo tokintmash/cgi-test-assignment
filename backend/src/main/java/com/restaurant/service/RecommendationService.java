@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+// import java.util.stream.Collectors;
 
 @Service
 public class RecommendationService {
@@ -79,21 +79,17 @@ public class RecommendationService {
             combinations = List.of();
         }
 
-        String weatherWarning = buildWeatherWarning(request.zone(), weather);
+        String weatherWarning = buildWeatherWarning(weather);
 
         return new SearchResponse(recommendations, combinations, allTableStatuses, weather, weatherWarning);
     }
 
-    private String buildWeatherWarning(String zone, WeatherData weather) {
+    private String buildWeatherWarning(WeatherData weather) {
         if (weather == null) {
             return null;
         }
         double penalty = calculateWeatherPenalty(TERRACE_ZONE, weather);
         if (penalty >= 0.0) {
-            return null;
-        }
-        // Show warning when Terrace zone is selected or no zone filter (all zones shown)
-        if (zone != null && !zone.isBlank() && !TERRACE_ZONE.equalsIgnoreCase(zone)) {
             return null;
         }
         return String.format("Outdoor seating may be uncomfortable — temperature %.0f°C, wind %.0f m/s",
