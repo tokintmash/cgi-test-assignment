@@ -1,8 +1,7 @@
 # 🍽️ Smart Restaurant Reservation System
 
-An intelligent table reservation system with an interactive SVG floor plan and transparent recommendation scoring.
-
-![Demo Screenshot](docs/screenshots/main-view.png)
+An intelligent table reservation system with an interactive SVG floor plan and transparent recommendation scoring.  
+The project was done almost entirely using AI-agent orchestration appraoch. See AI-USAGE.md for details.
 
 ## ✨ Features
 
@@ -11,7 +10,35 @@ An intelligent table reservation system with an interactive SVG floor plan and t
 - **Weather-aware scoring** — real-time weather from Open-Meteo penalizes outdoor terrace tables in cold or windy conditions; at ≤5°C terrace tables are excluded entirely
 - **Transparent scoring** — see *why* each table is recommended with per-factor score breakdown
 - **Preference support** — window seat, privacy, accessibility, children's play area proximity
+- **Table combinations** — when no single table fits a large party, the system suggests adjacent table pairs
+- **Reservation management** — book tables, view reservation details, cancel bookings
 - **Realistic demo data** — randomly generated reservations on each startup, with a reset button
+
+## 📸 Screenshots
+
+### Full UI — Search, Floor Plan, Recommendations & Weather
+
+![Full UI with search results, floor plan, and weather warning](docs/screenshots/1-3.png)
+
+*Search form with preferences, color-coded floor plan (green = available, yellow = recommended, red = reserved), ranked recommendations, weather warning for terrace tables, and table tooltip.*
+
+### Booking Flow
+
+| Booking Dialog | Successful Booking |
+|---|---|
+| ![Booking dialog](docs/screenshots/reservation-dialog.png) | ![Successful booking](docs/screenshots/successful-booking.png) |
+
+### Table Combinations
+
+| Combined Recommendation | Combination Booking |
+|---|---|
+| ![Combined tables highlighted](docs/screenshots/combinations-recommended.png) | ![Combination booking dialog](docs/screenshots/combinations-reservation-dialog.png) |
+
+### Reservation Details & Tooltips
+
+| Reserved Table Details | Available Table Tooltip | Reserved Table Tooltip |
+|---|---|---|
+| ![Reservation modal](docs/screenshots/reserved-modal.png) | ![Available tooltip](docs/screenshots/tooltip-available.png) | ![Reserved tooltip](docs/screenshots/tooltip-reserved.png) |
 
 ## 🚀 Quick Start
 
@@ -82,12 +109,22 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design documentation.
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/api/tables/search` | Search available tables with recommendations |
-| `POST` | `/api/reservations` | Book a table |
+| `POST` | `/api/tables/search` | Search available tables with ranked recommendations |
+| `GET` | `/api/tables` | All tables with current status and reservation info |
+| `POST` | `/api/reservations` | Book a table (with overlap validation) |
 | `DELETE` | `/api/reservations/{id}` | Cancel a reservation |
 | `POST` | `/api/reservations/reset` | Regenerate random reservations |
-| `GET` | `/api/tables` | Get all tables with current status |
-| `GET` | `/api/weather` | Current weather data (Open-Meteo, 10-min cache) |
+| `GET` | `/api/weather` | Current weather (Open-Meteo, cached 10 min) |
+
+## 🐳 Docker
+
+```bash
+docker-compose up
+```
+
+Opens at `http://localhost:3000`. Backend API at `http://localhost:8080`.
+
+Requires Docker and Docker Compose. No Java or Node.js installation needed.
 
 ## 🧪 Testing
 
@@ -96,14 +133,20 @@ cd backend
 ./mvnw test
 ```
 
-Unit tests cover the recommendation scoring logic — the core "smart" component of the system.
+31 tests: 16 unit tests (recommendation scoring, combinations, weather penalties), 10 integration tests (MockMvc controllers), 4 weather service tests, 1 context load test. See [TESTS.md](TESTS.md) for full inventory.
+
+## ⏱️ Time Spent
+
+The project took one week to complete. I started on 8th of March and finished on 15th. There was one day I worked full day. All other days I worked for about half a day.
 
 ## 📋 Documentation
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — domain model, design decisions, API contract
+- [ARCHITECTURE.md](ARCHITECTURE.md) — domain model, scoring algorithm, API contract, design decisions
 - [ASSUMPTIONS.md](ASSUMPTIONS.md) — documented assumptions with reasoning
-- [AI-USAGE.md](AI-USAGE.md) — AI-assisted development methodology and transparency
-- [PROBLEMS.md](PROBLEMS.md) — issues encountered and how they were resolved
+- [AI-USAGE.md](AI-USAGE.md) — AI tools used, methodology, and detailed change log
+- [PROBLEMS.md](PROBLEMS.md) — issues encountered with root causes and solutions
+- [TESTS.md](TESTS.md) — test inventory with descriptions and run commands
+- [PROGRESS.md](PROGRESS.md) — phase tracker with task checklists
 
 ## 📝 License
 
