@@ -8,8 +8,11 @@ The goal was not to minimize effort, but to maximize quality within a constraine
 
 ## Tools Used
 
+Several tools were used/tested to learn and find which performs best.
+
 - **Amp** — AI coding agent for code generation, architecture planning, and implementation
-- **Claude Code** — UI/UX review and frontend refinement (with ui-ux-pro-max skill for design intelligence)
+- **Codex** — initial UI/UX generator using Canva MCP
+- **Claude Code** — became main tool (including ui-ux-pro-max skill for design intelligence)
 - **ChatGPT** — design discussions, algorithm reasoning, documentation drafting
 
 ## How AI Was Used
