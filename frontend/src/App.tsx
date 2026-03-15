@@ -288,7 +288,9 @@ function App() {
       setSelectedTableId(null)
       setSelectedCombination(null)
       setBookingOpen(false)
-      await runSearch(searchRequest)
+      const defaults = createDefaultSearchRequest()
+      setSearchRequest(defaults)
+      await runSearch(defaults)
     } catch (error: unknown) {
       setResetResult(errorMessage(error, 'Failed to reset reservations.'))
     } finally {

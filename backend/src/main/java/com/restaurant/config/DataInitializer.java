@@ -65,7 +65,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void generateRandomReservations() {
-        var random = new Random(42);
+        var random = new Random();
         var tables = tableRepository.findAll();
         var today = LocalDate.now();
 
