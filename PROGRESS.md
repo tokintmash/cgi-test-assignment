@@ -8,10 +8,10 @@
 | 1 | Backend core (entities, repos, seed data, API) | `feat/backend-core` | ✅ Done | Phase 0 |
 | 2 | Recommendation engine + unit tests | `feat/recommendation-engine` | ✅ Done | Phase 1 |
 | 3 | Frontend (search, floor plan, booking) | `feat/frontend-ui` | ✅ Done | Phase 2 |
-| 4 | Integration, polish & testing | `fix/integration-polish` | ⬜ Not started | Phase 3 |
+| 4 | Integration, polish & testing | `fix/integration-polish` | ✅ Done | Phase 3 |
 | 4.5 | Weather-aware recommendations | `feat/weather-widget` | ✅ Done | Phase 4 |
 | 5 | Docker | `feat/docker` | ✅ Done | Phase 4.5 |
-| 6 | Documentation & submission | `docs/final` | ⬜ Not started | Phase 5 |
+| 6 | Documentation & submission | `docs/final` | ✅ Done | Phase 5 |
 
 ## Status Key
 
@@ -72,7 +72,7 @@
 - Treat hover tooltips and stronger recommended/selected state emphasis as deferred polish for a later phase, not current defects by default.
 
 ### Phase 4: Integration & Polish (`fix/integration-polish`)
-- [ ] End-to-end flow testing
+- [x] End-to-end flow testing
 - [x] Bug fixes from integration
 - [x] "Reset reservations" button in UI (done in Phase 3)
 - [x] Table hover tooltips (capacity, features, status)
@@ -102,10 +102,10 @@
 - [x] Verify full stack starts from `docker-compose up`
 
 ### Phase 6: Documentation & Submission (`docs/final`)
-- [ ] README finalized with screenshots
-- [ ] ARCHITECTURE.md verified against final implementation
-- [ ] AI-USAGE.md change log complete
-- [ ] ASSUMPTIONS.md reviewed
-- [ ] PROBLEMS.md updated with all issues encountered
-- [ ] Fresh-clone verification (git clone → run → works)
-- [ ] Git history review
+- [x] README finalized with screenshots
+- [x] ARCHITECTURE.md verified against final implementation
+- [x] AI-USAGE.md change log complete
+- [x] ASSUMPTIONS.md reviewed
+- [x] PROBLEMS.md updated with all issues encountered
+- [x] Fresh-clone verification (git clone → run → works)
+- [x] Git history review
